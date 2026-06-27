@@ -1,6 +1,7 @@
 package dev.yash.dynamicweatherapp.data.remote.dto
 
 import com.google.gson.annotations.SerializedName
+import dev.yash.dynamicweatherapp.data.remote.dto.GeocodingResponseDto
 
 data class OpenMeteoDto(
     val current: CurrentDto,

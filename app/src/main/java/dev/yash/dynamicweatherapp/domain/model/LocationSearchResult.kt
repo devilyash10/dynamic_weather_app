@@ -1,0 +1,10 @@
+package dev.yash.dynamicweatherapp.domain.model
+
+data class LocationSearchResult(
+    val id: Int,
+    val name: String,
+    val country: String,
+    val admin1: String?, // This is usually the State or Province
+    val latitude: Double,
+    val longitude: Double
+)

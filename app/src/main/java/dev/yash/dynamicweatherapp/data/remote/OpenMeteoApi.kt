@@ -1,5 +1,6 @@
 package dev.yash.dynamicweatherapp.data.remote
 
+import dev.yash.dynamicweatherapp.data.remote.dto.GeocodingResponseDto
 import dev.yash.dynamicweatherapp.data.remote.dto.OpenMeteoDto
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -17,4 +18,12 @@ interface OpenMeteoApi { // Keeping the name so DI doesn't break, but it's hitti
         @Query("timezone") timezone: String = "auto", // Automatically syncs to the user's local time
         @Query("timeformat") timeformat: String = "unixtime" // Matches our existing UI logic perfectly
     ): OpenMeteoDto
+
+    @GET("https://geocoding-api.open-meteo.com/v1/search")
+    suspend fun searchLocation(
+        @Query("name") query: String,
+        @Query("count") count: Int = 5, // We only want the top 5 results
+        @Query("language") language: String = "en",
+        @Query("format") format: String = "json"
+    ): GeocodingResponseDto
 }
