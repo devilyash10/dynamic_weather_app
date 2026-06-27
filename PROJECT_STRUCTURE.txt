@@ -1,5 +1,130 @@
 dev.yash.dynamicweatherapp
 │
+├── DynamicWeatherApp.kt                  // Application class (Initializes WorkManager/Timber)
+├── MainActivity.kt                       // Single Activity holding the Compose NavHost
+│
+├── di                                    // Dependency Injection
+│   ├── NetworkModule.kt                  // Provides Retrofit & OkHttp
+│   ├── RepositoryModule.kt               // Binds Repository interfaces to implementations
+│   └── LocationModule.kt                 // Provides FusedLocationProvider
+│
+├── data                                  // DATA LAYER (Fetching & Storing)
+│   ├── remote
+│   │   ├── OpenWeatherApi.kt             // Retrofit Interface (OneCall API)
+│   │   └── dto                           // Network JSON Models
+│   │       ├── OneCallResponseDto.kt     // Root JSON
+│   │       ├── CurrentWeatherDto.kt
+│   │       ├── HourlyWeatherDto.kt
+│   │       └── DailyWeatherDto.kt
+│   ├── local
+│   │   ├── UserPreferences.kt            // DataStore: Celsius/Fahrenheit, Sync intervals
+│   │   └── entity                        // Room DB (if caching cities)
+│   │       └── SavedCityEntity.kt
+│   ├── repository
+│   │   ├── WeatherRepositoryImpl.kt      // Maps DTOs to pure Domain Models
+│   │   └── SettingsRepositoryImpl.kt     // Handles reading/writing DataStore
+│   ├── location
+│   │   └── DefaultLocationTracker.kt     // Implements GPS fetching
+│   └── worker
+│       └── WeatherBackgroundWorker.kt    // WorkManager for the 15/30/60 min sync
+│
+├── domain                                // DOMAIN LAYER (Pure Kotlin, Business Logic)
+│   ├── model                             // UI-ready data models (No API annotations here)
+│   │   ├── WeatherInfo.kt                // Holds current, hourly, and daily info
+│   │   ├── CurrentWeather.kt             // Temp, condition, humidity, wind, UV, pressure
+│   │   ├── HourlyForecast.kt             // Time, temp, icon for the horizontal scroll
+│   │   └── DailyForecast.kt              // Day, min/max temp, icon for the 5-day list
+│   ├── repository                        // Interfaces defining what Data layer must provide
+│   │   ├── WeatherRepository.kt
+│   │   └── SettingsRepository.kt
+|   |   └── WeatherMappers.kt              // Extension functions to map DTOs to Domain models                          // LOCATION LAYER (GPS)
+│   └── location
+│       └── LocationTracker.kt            // Interface defining getLocation()
+│
+└── presentation                          // PRESENTATION LAYER (UI & ViewModels)
+    ├── theme                             // Material 3 styling
+    │   ├── Color.kt                      // Your dark blues, gradients, and text colors
+    │   ├── Theme.kt
+    │   └── Type.kt                       // Fonts matching your UI typography
+    │
+    ├── navigation                        // Routing Logic
+    │   ├── NavGraph.kt                   // Setup NavHost and composable routes
+    │   └── Screen.kt                     // Sealed class (Home, Cities, Settings)
+    │
+    ├── common                            // Reusable UI components
+    │   ├── GlassmorphicBackground.kt     // The dynamic gradient background
+    │   ├── GlassCard.kt                  // The translucent rounded cards used everywhere
+    │   ├── WeatherIcon.kt                // Maps API conditions to local drawable resources
+    │   └── BottomNavigationBar.kt        // The custom bottom nav (Home / Cities / Settings)
+    │
+    ├── home                              // UI IMAGE: Home_1.jpg & Home_2.jpg
+    │   ├── HomeViewModel.kt              // Manages Home UI State (Loading, Success, Error)
+    │   ├── HomeState.kt                  // Data class holding UI state
+    │   ├── HomeScreen.kt                 // Main screen assembly
+    │   └── components
+    │       ├── LocationHeader.kt         // Top row with city name and "15 min ago"
+    │       ├── MainTemperatureDisplay.kt // Large temp, condition, H/L, feels like
+    │       ├── HourlyForecastRow.kt      // Horizontal scroll (Now, 2PM, 3PM...)
+    │       ├── WeatherMetricsGrid.kt     // The 2x2 grid containing the next 4 items:
+    │       │   ├── MetricCardHumidity.kt
+    │       │   ├── MetricCardWind.kt
+    │       │   ├── MetricCardSun.kt      // Sunrise/Sunset combined
+    │       │   ├── MetricCardUv.kt       // UV Index with SPF text
+    │       │   └── MetricCardPressure.kt
+    │       └── DailyForecastSection.kt   // 5-Day forecast list
+    │
+    ├── search                            // UI IMAGE: CitySearch.jpg
+    │   ├── SearchViewModel.kt
+    │   ├── SearchState.kt
+    │   ├── SearchScreen.kt
+    │   └── components
+    │       ├── SearchTextField.kt        // "Search for a city..." input
+    │       ├── CurrentLocationButton.kt  // "Use Current GPS Location" button
+    │       └── SavedCityCard.kt          // Glassmorphic card (e.g., San Francisco 18°C)
+    │
+    └── settings                          // UI IMAGE: Settings_1.png & Settings_2.png
+        ├── SettingsViewModel.kt
+        ├── SettingsState.kt
+        ├── SettingsScreen.kt
+        └── components
+            ├── RadioGroupCard.kt         // Used for Temperature Unit & Background Sync
+            ├── ToggleGroupCard.kt        // Used for Display settings (Dynamic backgrounds, etc.)
+            ├── AboutSectionCard.kt       // Version, Data Source, Rate, Privacy Policy
+            └── AlertSettingsCard.kt      // Severe Weather Alerts banner
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+dev.yash.dynamicweatherapp
+│
 ├── DynamicWeatherApp.kt                  // Application class for initialization (WorkManager, etc.)
 ├── MainActivity.kt                       // Single Activity entry point
 │

@@ -21,11 +21,12 @@ A modern, single-screen Android weather application built from scratch to demons
 4.  Customizable background sync (15m, 30m, 1h).
 5.  Settings configuration (Celsius/Fahrenheit, Display toggles).
 
+
 ## Project Roadmap & Status
 
 * [x] **Phase 0:** Initial Project Configuration (Gradle dependencies, Manifest permissions).
-* [x] **Phase 1:** UI/UX Finalization & Architecture Mapping (Project structure created).
-* [ ] **Phase 2:** Domain & Data Layer Setup (API integration, DTOs, Repository interfaces).
+* [x] **Phase 1:** UI/UX Finalization & Architecture Mapping (Detailed MVVM structure locked).
+* [ ] **Phase 2:** Domain & Data Layer Setup (OneCall API 3.0 integration, DTOs, Repository interfaces).
 * [ ] **Phase 3:** Location Services & Background Work (GPS, WorkManager).
 * [ ] **Phase 4:** Core UI Components & Theme (Colors, Typography, Glassmorphic components).
 * [ ] **Phase 5:** Home Screen Implementation (ViewModel, State integration, Layouts).
@@ -33,4 +34,4 @@ A modern, single-screen Android weather application built from scratch to demons
 * [ ] **Phase 7:** Polish & Optimization (Cold start optimizations, animations).
 
 ## Current Working Focus
-Moving into **Phase 2**. Next step is setting up the Retrofit interface, API keys, and the Data Transfer Objects (DTOs) for OpenWeather.
+Currently executing **Phase 2**. Setting up the Retrofit interface using the OpenWeather One Call API 3.0 to fetch current, hourly, and daily data (including UV and pressure) in a single network request. Defining the Data Transfer Objects (DTOs).
