@@ -1,0 +1,20 @@
+Copyright (c) 2026 Yash Bhadoriya. All rights reserved.
+
+This software is licensed under a custom "Attribution-Contribution" license.
+
+1. PERMISSIONS
+You are permitted to view, study, and contribute improvements (pull requests) to this codebase. All contributions made to this repository are subject to the terms of this license.
+
+2. RESTRICTIONS
+You may NOT:
+a) Sell, sublicense, rent, or lease this software for commercial gain.
+b) Rebrand, modify, or distribute this software as your own independent product.
+c) Remove this copyright notice from any files.
+
+3. CONTRIBUTIONS
+By submitting a contribution to this project, you grant the copyright holder (Yash Bhadoriya) a perpetual, irrevocable, worldwide, royalty-free, non-exclusive license to use, reproduce, and distribute your contribution.
+
+4. NO WARRANTY
+This software is provided "as is," without warranty of any kind, express or implied. The author shall not be held liable for any claims or damages arising from the use of this software.
+
+For any commercial licensing inquiries, please contact: yashbhadoriya2425@gmail.com
