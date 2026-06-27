@@ -1,0 +1,67 @@
+dev.yash.dynamicweatherapp
+│
+├── DynamicWeatherApp.kt                  // Application class for initialization (WorkManager, etc.)
+├── MainActivity.kt                       // Single Activity entry point
+│
+├── di                                    // Dependency Injection (Manual or Hilt setup)
+│   └── AppContainer.kt
+│
+├── data                                  // DATA LAYER
+│   ├── remote
+│   │   ├── OpenWeatherApi.kt             // Retrofit Interface
+│   │   └── dto                           // Data Transfer Objects (JSON models)
+│   │       ├── WeatherResponseDto.kt
+│   │       └── ForecastResponseDto.kt
+│   ├── local
+│   │   ├── DataStoreManager.kt           // Preferences (Celsius/Fahrenheit, Sync intervals)
+│   │   └── entity                        // Local database models (for saved cities)
+│   ├── repository                        // Repository implementations
+│   │   └── WeatherRepositoryImpl.kt
+│   ├── location
+│   │   └── LocationTrackerImpl.kt        // FusedLocationProvider implementation
+│   └── worker
+│       └── WeatherSyncWorker.kt          // WorkManager for 15/30/60 min background syncs
+│
+├── domain                                // DOMAIN LAYER
+│   ├── model                             // Clean UI-ready business models
+│   │   ├── WeatherInfo.kt
+│   │   ├── DailyForecast.kt
+│   │   └── CityInfo.kt
+│   ├── repository                        // Interfaces for the data layer
+│   │   └── WeatherRepository.kt
+│   └── location
+│       └── LocationTracker.kt            // Interface for location services
+│
+└── presentation                          // PRESENTATION LAYER (UI)
+    ├── theme
+    │   ├── Color.kt                      // Dark mode & atmospheric gradients
+    │   ├── Theme.kt
+    │   └── Type.kt                       // Typography settings
+    ├── navigation
+    │   ├── NavGraph.kt                   // Compose Navigation setup
+    │   └── Screen.kt                     // Sealed class for routes (Home, Search, Settings)
+    ├── common                            // Shared UI components
+    │   ├── GlassmorphicCard.kt
+    │   ├── WeatherIcon.kt
+    │   └── CustomBottomNavBar.kt         // The bottom nav shown in the UI
+    ├── home
+    │   ├── HomeViewModel.kt
+    │   ├── HomeScreen.kt
+    │   └── components
+    │       ├── CurrentWeatherHeader.kt   // Main temp and condition
+    │       ├── HourlyForecastRow.kt      // Horizontal scroll
+    │       ├── WeatherDetailsGrid.kt     // Humidity, Wind, Sunrise, etc.
+    │       └── FiveDayForecastList.kt
+    ├── search
+    │   ├── SearchViewModel.kt
+    │   ├── SearchScreen.kt
+    │   └── components
+    │       ├── SearchBar.kt
+    │       ├── CurrentLocationButton.kt
+    │       └── SavedCityItem.kt          // The city cards (e.g., San Francisco, New York)
+    └── settings
+        ├── SettingsViewModel.kt
+        ├── SettingsScreen.kt
+        └── components
+            ├── SettingsToggleRow.kt      // Switches for Dynamic Backgrounds, etc.
+            └── SettingsSelectionRow.kt   // Radio buttons for Temp Unit / Sync
