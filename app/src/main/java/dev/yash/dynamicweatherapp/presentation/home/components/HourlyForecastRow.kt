@@ -12,19 +12,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import dev.yash.dynamicweatherapp.domain.model.HourlyForecast
+import dev.yash.dynamicweatherapp.domain.settings.TemperatureUnit
 import dev.yash.dynamicweatherapp.presentation.common.GlassCard
 import dev.yash.dynamicweatherapp.presentation.common.getWeatherIconResource
-import dev.yash.dynamicweatherapp.presentation.theme.NimbusAccentBlue
+import dev.yash.dynamicweatherapp.presentation.common.toFormattedTemp
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextHint
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextWhite
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.math.roundToInt
-
+import java.util.Date
 
 @Composable
 fun HourlyForecastRow(
     hourlyForecasts: List<HourlyForecast>,
+    temperatureUnit: TemperatureUnit,
     modifier: Modifier = Modifier
 ) {
     GlassCard(modifier = modifier.fillMaxWidth()) {
@@ -33,15 +33,20 @@ fun HourlyForecastRow(
             horizontalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             items(hourlyForecasts.take(24)) { forecast -> // Limit to next 24 hours
-                HourlyForecastItem(forecast = forecast)
+                HourlyForecastItem(
+                    forecast = forecast,
+                    temperatureUnit = temperatureUnit // Pass it to the item
+                )
             }
         }
     }
 }
 
 @Composable
-private fun HourlyForecastItem(forecast: HourlyForecast) {
-    // Convert Unix timestamp to "2 PM" format
+private fun HourlyForecastItem(
+    forecast: HourlyForecast,
+    temperatureUnit: TemperatureUnit // Receives the unit here
+) {
     val date = Date(forecast.time * 1000L)
     val timeFormatted = SimpleDateFormat("h a", java.util.Locale.getDefault()).format(date)
 
@@ -66,7 +71,7 @@ private fun HourlyForecastItem(forecast: HourlyForecast) {
         Spacer(modifier = Modifier.height(12.dp))
 
         Text(
-            text = "${forecast.temperature.roundToInt()}°",
+            text = forecast.temperature.toFormattedTemp(temperatureUnit), // Uses the helper function
             style = MaterialTheme.typography.bodyLarge,
             color = NimbusTextWhite
         )

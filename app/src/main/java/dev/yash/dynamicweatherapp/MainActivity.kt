@@ -55,11 +55,9 @@ class MainActivity : ComponentActivity() {
                             }
                         }
 
-                        // 3. Settings Screen (Placeholder for Phase 6)
+                        // 3. Settings Screen
                         composable(Screen.Settings.route) {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text("Settings Screen Coming Soon", color = NimbusTextWhite)
-                            }
+                            dev.yash.dynamicweatherapp.presentation.settings.SettingsScreen()
                         }
                     }
                 }

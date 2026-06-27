@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.yash.dynamicweatherapp.domain.location.LocationTracker
 import dev.yash.dynamicweatherapp.domain.repository.WeatherRepository
+import dev.yash.dynamicweatherapp.domain.settings.SettingsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -15,15 +16,22 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: WeatherRepository,
-    private val locationTracker: LocationTracker
+    private val locationTracker: LocationTracker,
+    private val settingsRepository: SettingsRepository // NEW: Inject settings
 ) : ViewModel() {
 
-    // Backing property to prevent UI from modifying the state directly
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> = _state.asStateFlow()
 
     init {
-        // Fetch data immediately when the screen is created
+        // NEW: Listen to DataStore in the background. If the user flips the switch
+        // in Settings, this instantly updates the Home state.
+        viewModelScope.launch {
+            settingsRepository.temperatureUnit.collect { unit ->
+                _state.update { it.copy(temperatureUnit = unit) }
+            }
+        }
+
         loadWeatherInfo()
     }
 

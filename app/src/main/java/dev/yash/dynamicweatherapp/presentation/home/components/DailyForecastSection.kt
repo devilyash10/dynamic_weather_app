@@ -1,5 +1,7 @@
 package dev.yash.dynamicweatherapp.presentation.home.components
 
+import dev.yash.dynamicweatherapp.domain.settings.TemperatureUnit
+import dev.yash.dynamicweatherapp.presentation.common.toFormattedTemp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -25,6 +27,7 @@ import kotlin.math.roundToInt
 @Composable
 fun DailyForecastSection(
     dailyForecasts: List<DailyForecast>,
+    temperatureUnit: TemperatureUnit,
     modifier: Modifier = Modifier
 ) {
     GlassCard(modifier = modifier.fillMaxWidth()) {
@@ -45,7 +48,8 @@ fun DailyForecastSection(
             dailyForecasts.take(5).forEachIndexed { index, forecast ->
                 DailyForecastItem(
                     forecast = forecast,
-                    isToday = index == 0 // Label the first item as "Today"
+                    isToday = index == 0,
+                    temperatureUnit = temperatureUnit // UPDATED
                 )
 
                 // Add spacing between items, but not after the last one
@@ -60,7 +64,8 @@ fun DailyForecastSection(
 @Composable
 private fun DailyForecastItem(
     forecast: DailyForecast,
-    isToday: Boolean
+    isToday: Boolean,
+    temperatureUnit: TemperatureUnit
 ) {
     // Format the Unix timestamp to "Mon", "Tue", etc.
     val dayFormat = SimpleDateFormat("EEE", java.util.Locale.getDefault())
@@ -94,7 +99,7 @@ private fun DailyForecastItem(
             modifier = Modifier.width(140.dp)
         ) {
             Text(
-                text = "${forecast.minTemp.roundToInt()}°",
+                text = forecast.minTemp.toFormattedTemp(temperatureUnit), // UPDATED
                 style = MaterialTheme.typography.bodyLarge,
                 color = NimbusTextHint
             )
@@ -122,7 +127,7 @@ private fun DailyForecastItem(
             Spacer(modifier = Modifier.width(12.dp))
 
             Text(
-                text = "${forecast.maxTemp.roundToInt()}°",
+                text = forecast.maxTemp.toFormattedTemp(temperatureUnit), // UPDATED
                 style = MaterialTheme.typography.bodyLarge,
                 color = NimbusTextWhite
             )

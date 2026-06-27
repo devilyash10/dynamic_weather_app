@@ -71,27 +71,28 @@ fun HomeScreen(
 
                     Spacer(modifier = Modifier.height(48.dp))
 
-                    MainTemperatureDisplay(currentWeather = state.weatherInfo!!.current)
+                    MainTemperatureDisplay(
+                        currentWeather = state.weatherInfo!!.current,
+                        temperatureUnit = state.temperatureUnit
+                    )
 
                     Spacer(modifier = Modifier.height(48.dp))
 
-
-
-                    MainTemperatureDisplay(currentWeather = state.weatherInfo!!.current)
-
-                    Spacer(modifier = Modifier.height(48.dp))
-
-// Add the Hourly Row
-                    HourlyForecastRow(hourlyForecasts = state.weatherInfo!!.hourly)
+                    HourlyForecastRow(
+                        hourlyForecasts = state.weatherInfo!!.hourly,
+                        temperatureUnit = state.temperatureUnit
+                    )
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-// Add the Metrics Grid
                     WeatherMetricsGrid(currentWeather = state.weatherInfo!!.current)
 
-                    Spacer(modifier = Modifier.height(24.dp)) // Extra padding so it scrolls above the BottomNavBar
+                    Spacer(modifier = Modifier.height(24.dp))
 
-                    DailyForecastSection(dailyForecasts = state.weatherInfo!!.daily)
+                    DailyForecastSection(
+                        dailyForecasts = state.weatherInfo!!.daily,
+                        temperatureUnit = state.temperatureUnit
+                    )
 
                     Spacer(modifier = Modifier.height(100.dp))
                 }

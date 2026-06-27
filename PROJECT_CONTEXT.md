@@ -29,7 +29,7 @@ A modern, single-screen Android weather application built from scratch to demons
 * [x] **Phase 2:** Domain & Data Layer Setup
 * [x] **Phase 3:** Dependency Injection & Location Services
 * [x] **Phase 4:** Core UI Components & Material 3 Theme
-* [ ] **Phase 5:** Home Screen Implementation
+* [x] **Phase 5:** Home Screen Implementation
 * [ ] **Phase 6:** Search & Settings Implementation
 * [ ] **Phase 7:** Polish, Optimization & Release Prep
 
@@ -51,12 +51,13 @@ We integrated Dagger Hilt as our Dependency Injection framework, starting with t
 
 ### Phase 4: Core UI Components & Material 3 Theme
 We translated the UI design system into Jetpack Compose, establishing a premium, unified dark theme. We defined specific color palettes (`NimbusDark`, `NimbusGlass`) and custom typography in our theme files. We built a highly reusable `GlassCard` composable to serve as the foundation for our translucent UI containers. Finally, we set up the navigation structure using a type-safe `Screen` sealed class, implemented the `CustomBottomNavBar`, and created a utility to map API weather codes to local image assets.
-
 ---
 ### Note On HomeViewModel
 Encapsulation: We use a private _state (MutableStateFlow) and expose a public state (StateFlow). This enforces a unidirectional data flow—the UI can only read the state, never write to it directly.
 The .fold function: This is a very elegant Kotlin standard library feature for handling the Result class we created in our Repository. It cleanly forces you to handle both the onSuccess and onFailure paths.
+### Phase 5: Home Screen Implementation
+We brought the application to life by implementing the `HomeScreen` and its governing `HomeViewModel`. We utilized the `StateFlow` pattern to manage Loading, Success, and Error states in a unidirectional data flow. The UI was constructed modularly to perfectly match the mockups, assembling custom components including the `LocationHeader`, a massive `MainTemperatureDisplay`, an optimized, horizontally scrolling `HourlyForecastRow`, a 2x2 `WeatherMetricsGrid` (detailing humidity, wind, UV, and pressure), and a vertical `DailyForecastSection`. This phase successfully bridged our pure Kotlin business logic with our Material 3 Compose UI layer.
 
 ---
 ## Current Working Focus
-Moving into **Phase 5: Home Screen Implementation**. The goal is to build the `HomeViewModel` to manage UI state via `StateFlow`, and then assemble the complex Home Screen layout (large temperature display, horizontal hourly scroll, environmental metrics grid, and 5-day forecast list) using the foundational components built in Phase 4.
+Moving into **Phase 6: Search & Settings Implementation**. We will integrate Jetpack DataStore to allow users to toggle settings like Celsius/Fahrenheit and Background Sync intervals. We will also build the `SearchScreen` so users can look up and save alternate cities to a local database.

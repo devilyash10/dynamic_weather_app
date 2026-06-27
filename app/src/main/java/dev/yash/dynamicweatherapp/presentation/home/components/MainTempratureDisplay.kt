@@ -1,5 +1,8 @@
 package dev.yash.dynamicweatherapp.presentation.home.components
 
+import dev.yash.dynamicweatherapp.domain.settings.TemperatureUnit
+import dev.yash.dynamicweatherapp.presentation.common.getSymbol
+import dev.yash.dynamicweatherapp.presentation.common.toFormattedTemp
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -8,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.core.text.util.LocalePreferences
 import dev.yash.dynamicweatherapp.domain.model.CurrentWeather
 import dev.yash.dynamicweatherapp.presentation.common.getWeatherIconResource
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusAccentBlue
@@ -17,6 +21,7 @@ import kotlin.math.roundToInt
 @Composable
 fun MainTemperatureDisplay(
     currentWeather: CurrentWeather,
+    temperatureUnit: TemperatureUnit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -37,11 +42,11 @@ fun MainTemperatureDisplay(
         // Large Temperature (e.g., "18°C")
         Row(verticalAlignment = Alignment.Top) {
             Text(
-                text = "${currentWeather.temperature.roundToInt()}°",
+                text = currentWeather.temperature.toFormattedTemp(temperatureUnit), // UPDATED
                 style = MaterialTheme.typography.displayLarge
             )
             Text(
-                text = "C", // We will make this dynamic in Settings Phase
+                text = temperatureUnit.getSymbol(), // UPDATED
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(top = 12.dp)
             )
@@ -58,7 +63,7 @@ fun MainTemperatureDisplay(
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Feels like ${currentWeather.feelsLike.roundToInt()}°C",
+            text = "Feels like ${currentWeather.feelsLike.toFormattedTemp(temperatureUnit)}${temperatureUnit.getSymbol()}", // UPDATED
             style = MaterialTheme.typography.bodyLarge,
             color = NimbusTextHint
         )
