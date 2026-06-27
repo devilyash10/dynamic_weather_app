@@ -30,7 +30,7 @@ A modern, single-screen Android weather application built from scratch to demons
 * [x] **Phase 3:** Dependency Injection & Location Services
 * [x] **Phase 4:** Core UI Components & Material 3 Theme
 * [x] **Phase 5:** Home Screen Implementation
-* [ ] **Phase 6:** Search & Settings Implementation
+* [x] **Phase 6:** Search & Settings Implementation
 * [ ] **Phase 7:** Polish, Optimization & Release Prep
 
 ---
@@ -55,9 +55,14 @@ We translated the UI design system into Jetpack Compose, establishing a premium,
 ### Note On HomeViewModel
 Encapsulation: We use a private _state (MutableStateFlow) and expose a public state (StateFlow). This enforces a unidirectional data flow—the UI can only read the state, never write to it directly.
 The .fold function: This is a very elegant Kotlin standard library feature for handling the Result class we created in our Repository. It cleanly forces you to handle both the onSuccess and onFailure paths.
+
 ### Phase 5: Home Screen Implementation
 We brought the application to life by implementing the `HomeScreen` and its governing `HomeViewModel`. We utilized the `StateFlow` pattern to manage Loading, Success, and Error states in a unidirectional data flow. The UI was constructed modularly to perfectly match the mockups, assembling custom components including the `LocationHeader`, a massive `MainTemperatureDisplay`, an optimized, horizontally scrolling `HourlyForecastRow`, a 2x2 `WeatherMetricsGrid` (detailing humidity, wind, UV, and pressure), and a vertical `DailyForecastSection`. This phase successfully bridged our pure Kotlin business logic with our Material 3 Compose UI layer.
 
+### Phase 6: Search & Settings Implementation
+We scaled out full persistence architectures across the application layer. We integrated Jetpack DataStore to capture localized configuration preferences, constructing full mathematical inversion bridges to allow real-time toggling between Celsius and Fahrenheit parameters cleanly across all screen metrics. We decoupled from OpenWeather API dependencies to transition to Open-Meteo's subscription-free tiers. Finally, we added an Android Room SQLite Database ecosystem to handle localized storage parameters for custom user locations, tracking insertions, deletions, and continuous flow bindings inside our debounced `SearchScreen` workflow module.
+
 ---
+
 ## Current Working Focus
-Moving into **Phase 6: Search & Settings Implementation**. We will integrate Jetpack DataStore to allow users to toggle settings like Celsius/Fahrenheit and Background Sync intervals. We will also build the `SearchScreen` so users can look up and save alternate cities to a local database.
+Moving into **Phase 7: Polish, Optimization & Release Prep**. The final goal is to connect the database to the Home Screen so clicking a saved city switches the home weather view, build out empty states, ensure dark-mode status bar formatting, run performance tracing, and polish transitions.

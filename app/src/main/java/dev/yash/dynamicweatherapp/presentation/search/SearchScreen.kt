@@ -20,9 +20,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import dev.yash.dynamicweatherapp.data.local.entity.SavedLocationEntity
 import dev.yash.dynamicweatherapp.domain.model.LocationSearchResult
 import dev.yash.dynamicweatherapp.presentation.common.GlassCard
+import dev.yash.dynamicweatherapp.presentation.navigation.Screen
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusAccentBlue
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusDark
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextHint
@@ -31,6 +33,7 @@ import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextWhite
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
+    navController: NavController,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     val state by viewModel.state.collectAsState()
@@ -49,7 +52,6 @@ fun SearchScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // Search Input Bar
         OutlinedTextField(
             value = state.searchQuery,
             onValueChange = { viewModel.onSearchQueryChange(it) },
@@ -73,7 +75,6 @@ fun SearchScreen(
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // UI State Logic
         when {
             state.isSearching -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter) {
@@ -84,7 +85,6 @@ fun SearchScreen(
                 Text(text = state.error!!, color = NimbusTextHint, modifier = Modifier.padding(16.dp))
             }
             state.searchQuery.length >= 2 && state.searchResults.isNotEmpty() -> {
-                // RENDER ACTIVE SEARCH API RESULTS
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(bottom = 100.dp)
@@ -92,13 +92,17 @@ fun SearchScreen(
                     items(state.searchResults) { result ->
                         SearchResultItem(
                             location = result,
-                            onClick = { viewModel.saveLocation(result) } // Saves to database on click
+                            onClick = {
+                                viewModel.saveLocation(result)
+                                navController.navigate(Screen.Home.passCoordinates(result.latitude, result.longitude, result.name)) {
+                                    popUpTo(Screen.Home.route) { inclusive = true }
+                                }
+                            }
                         )
                     }
                 }
             }
             else -> {
-                // RENDER LOCAL SAVED CITIES (When search field is clear)
                 Column(modifier = Modifier.fillMaxWidth()) {
                     Text(
                         text = "SAVED LOCATIONS",
@@ -122,7 +126,12 @@ fun SearchScreen(
                             items(state.savedLocations) { dbLocation ->
                                 SavedLocationRow(
                                     location = dbLocation,
-                                    onDeleteClick = { viewModel.deleteLocation(dbLocation) }
+                                    onDeleteClick = { viewModel.deleteLocation(dbLocation) },
+                                    onClick = {
+                                        navController.navigate(Screen.Home.passCoordinates(dbLocation.latitude, dbLocation.longitude, dbLocation.name)) {
+                                            popUpTo(Screen.Home.route) { inclusive = true }
+                                        }
+                                    }
                                 )
                             }
                         }
@@ -133,7 +142,6 @@ fun SearchScreen(
     }
 }
 
-// Item card representing active Search Results from the Network API
 @Composable
 fun SearchResultItem(location: LocationSearchResult, onClick: () -> Unit) {
     GlassCard(
@@ -157,17 +165,25 @@ fun SearchResultItem(location: LocationSearchResult, onClick: () -> Unit) {
     }
 }
 
-// Item card representing items pulled out of Room Database
 @Composable
-fun SavedLocationRow(location: SavedLocationEntity, onDeleteClick: () -> Unit) {
-    GlassCard(modifier = Modifier.fillMaxWidth()) {
+fun SavedLocationRow(
+    location: SavedLocationEntity,
+    onDeleteClick: () -> Unit,
+    onClick: () -> Unit // Added missing click handling parameter
+) {
+    GlassCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(24.dp))
+            .clickable { onClick() } // Connected row selection click layout logic
+    ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(imageVector = Icons.Default.LocationOn, contentDescription = null, tint = NimbusTextWhite, modifier = Modifier.size(24.dp))
+                Icon(imageVector = Icons.Default.LocationOn, contentDescription = null, tint = NimbusAccentBlue, modifier = Modifier.size(24.dp))
                 Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(text = location.name, style = MaterialTheme.typography.titleMedium, color = NimbusTextWhite)

@@ -1,79 +1,102 @@
 package dev.yash.dynamicweatherapp.presentation.home
 
+import android.content.Context
+import android.location.Geocoder
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.yash.dynamicweatherapp.domain.location.LocationTracker
 import dev.yash.dynamicweatherapp.domain.repository.WeatherRepository
 import dev.yash.dynamicweatherapp.domain.settings.SettingsRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val repository: WeatherRepository,
     private val locationTracker: LocationTracker,
-    private val settingsRepository: SettingsRepository // NEW: Inject settings
+    private val settingsRepository: SettingsRepository,
+    @ApplicationContext private val context: Context, // Inject context for Geocoder
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(HomeState())
     val state: StateFlow<HomeState> = _state.asStateFlow()
 
+    private val passedLat: String? = savedStateHandle.get<String>("lat")
+    private val passedLon: String? = savedStateHandle.get<String>("lon")
+    private val passedCityName: String? = savedStateHandle.get<String>("cityName")
+
     init {
-        // NEW: Listen to DataStore in the background. If the user flips the switch
-        // in Settings, this instantly updates the Home state.
         viewModelScope.launch {
             settingsRepository.temperatureUnit.collect { unit ->
                 _state.update { it.copy(temperatureUnit = unit) }
             }
         }
-
         loadWeatherInfo()
     }
 
     fun loadWeatherInfo() {
         viewModelScope.launch {
-            // 1. Set state to loading
-            _state.update { it.copy(
-                isLoading = true,
-                error = null
-            ) }
+            _state.update { it.copy(isLoading = true, error = null) }
 
-            // 2. Fetch the GPS coordinates
-            locationTracker.getCurrentLocation()?.let { location ->
+            if (passedLat != null && passedLon != null) {
+                // Scenario A: User manually selected a city from search
+                val cityName = passedCityName ?: "Selected Location"
+                fetchWeatherForLocation(passedLat.toDouble(), passedLon.toDouble(), cityName)
+            } else {
+                // Scenario B: Defaulting to current system GPS coordinates
+                locationTracker.getCurrentLocation()?.let { location ->
+                    val detectedCity = getCityNameFromCoordinates(location.latitude, location.longitude)
+                    fetchWeatherForLocation(location.latitude, location.longitude, detectedCity)
+                } ?: run {
+                    _state.update { it.copy(
+                        isLoading = false,
+                        error = "Unable to retrieve GPS location. Verify device permissions."
+                    ) }
+                }
+            }
+        }
+    }
 
-                // 3. If we have a location, fetch the weather from the repository
-                val result = repository.getWeatherData(location.latitude, location.longitude)
-
-                // 4. Handle the Success or Failure using Kotlin's fold function
-                result.fold(
-                    onSuccess = { weatherData ->
-                        _state.update { it.copy(
-                            weatherInfo = weatherData,
-                            isLoading = false,
-                            error = null,
-                            locationName = "Current Location" // In a production app, use Geocoder to get city name
-                        ) }
-                    },
-                    onFailure = { error ->
-                        _state.update { it.copy(
-                            weatherInfo = null,
-                            isLoading = false,
-                            error = error.message ?: "An unexpected network error occurred."
-                        ) }
-                    }
-                )
-            } ?: run {
-                // Handle the case where GPS is disabled or permissions are denied
+    private suspend fun fetchWeatherForLocation(lat: Double, lon: Double, locationName: String) {
+        val result = repository.getWeatherData(lat, lon)
+        result.fold(
+            onSuccess = { weatherData ->
                 _state.update { it.copy(
+                    weatherInfo = weatherData,
                     isLoading = false,
-                    error = "Couldn't retrieve location. Make sure to grant permission and enable GPS."
+                    error = null,
+                    locationName = locationName
+                ) }
+            },
+            onFailure = { error ->
+                _state.update { it.copy(
+                    weatherInfo = null,
+                    isLoading = false,
+                    error = error.message ?: "An unexpected network error occurred."
                 ) }
             }
+        )
+    }
+
+    // Translates GPS coordinates into localized city name strings safely off the main UI thread
+    private suspend fun getCityNameFromCoordinates(lat: Double, lon: Double): String = withContext(Dispatchers.IO) {
+        return@withContext try {
+            val geocoder = Geocoder(context, Locale.getDefault())
+            val addresses = geocoder.getFromLocation(lat, lon, 1)
+            addresses?.firstOrNull()?.locality ?: "Current Location"
+        } catch (e: Exception) {
+            "Current Location"
         }
     }
 }
