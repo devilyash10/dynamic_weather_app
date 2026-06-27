@@ -1,5 +1,8 @@
 package dev.yash.dynamicweatherapp.di
 
+import androidx.room.Room
+import dev.yash.dynamicweatherapp.data.local.WeatherDatabase
+import dev.yash.dynamicweatherapp.data.local.dao.LocationDao
 import android.app.Application
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -17,6 +20,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 import androidx.datastore.preferences.preferencesDataStoreFile
 import dagger.hilt.android.qualifiers.ApplicationContext
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -68,5 +72,20 @@ object AppModule {
     @Singleton
     fun provideSettingsRepository(dataStore: androidx.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences>): dev.yash.dynamicweatherapp.domain.settings.SettingsRepository {
         return dev.yash.dynamicweatherapp.data.repository.SettingsRepositoryImpl(dataStore)
+    }
+    @Provides
+    @Singleton
+    fun provideWeatherDatabase(@ApplicationContext context: android.content.Context): WeatherDatabase {
+        return Room.databaseBuilder(
+            context,
+            WeatherDatabase::class.java,
+            "weather_database"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideLocationDao(db: WeatherDatabase): LocationDao {
+        return db.locationDao
     }
 }

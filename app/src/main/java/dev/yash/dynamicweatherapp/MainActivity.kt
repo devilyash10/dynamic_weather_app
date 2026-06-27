@@ -48,11 +48,9 @@ class MainActivity : ComponentActivity() {
                             HomeScreen()
                         }
 
-                        // 2. Search Screen (Placeholder for Phase 6)
+                        // 2. Search Screen
                         composable(Screen.Search.route) {
-                            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                Text("Search Screen Coming Soon", color = NimbusTextWhite)
-                            }
+                            dev.yash.dynamicweatherapp.presentation.search.SearchScreen()
                         }
 
                         // 3. Settings Screen
