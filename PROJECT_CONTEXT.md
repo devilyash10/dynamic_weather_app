@@ -21,7 +21,6 @@ A modern, single-screen Android weather application built from scratch to demons
 4.  Customizable background sync (15m, 30m, 1h).
 5.  Settings configuration (Celsius/Fahrenheit, Display toggles).
 
-
 # Dynamic Weather App - Project Context
 
 ## Roadmap & Status
@@ -29,7 +28,7 @@ A modern, single-screen Android weather application built from scratch to demons
 * [x] **Phase 1:** UI/UX Finalization & Architecture Mapping
 * [x] **Phase 2:** Domain & Data Layer Setup
 * [x] **Phase 3:** Dependency Injection & Location Services
-* [ ] **Phase 4:** Core UI Components & Material 3 Theme
+* [x] **Phase 4:** Core UI Components & Material 3 Theme
 * [ ] **Phase 5:** Home Screen Implementation
 * [ ] **Phase 6:** Search & Settings Implementation
 * [ ] **Phase 7:** Polish, Optimization & Release Prep
@@ -50,6 +49,14 @@ We configured the Retrofit network client to consume the OpenWeather One Call AP
 ### Phase 3: Dependency Injection & Location Services
 We integrated Dagger Hilt as our Dependency Injection framework, starting with the `DynamicWeatherApp` application class and configuring `MainActivity` as the entry point. We established a clean abstraction for hardware services by defining a `LocationTracker` interface in the Domain layer. We then implemented `DefaultLocationTracker` in the Data layer using `FusedLocationProviderClient`, incorporating safe runtime permission checks to prevent crashes. Finally, we created `AppModule` to manage singleton instances of our Retrofit API, Location Services, and Repositories, ensuring our UI layer can easily and cleanly inject these dependencies.
 
+### Phase 4: Core UI Components & Material 3 Theme
+We translated the UI design system into Jetpack Compose, establishing a premium, unified dark theme. We defined specific color palettes (`NimbusDark`, `NimbusGlass`) and custom typography in our theme files. We built a highly reusable `GlassCard` composable to serve as the foundation for our translucent UI containers. Finally, we set up the navigation structure using a type-safe `Screen` sealed class, implemented the `CustomBottomNavBar`, and created a utility to map API weather codes to local image assets.
+
+---
+### Note On HomeViewModel
+Encapsulation: We use a private _state (MutableStateFlow) and expose a public state (StateFlow). This enforces a unidirectional data flow—the UI can only read the state, never write to it directly.
+The .fold function: This is a very elegant Kotlin standard library feature for handling the Result class we created in our Repository. It cleanly forces you to handle both the onSuccess and onFailure paths.
+
 ---
 ## Current Working Focus
-Moving into **Phase 4: Core UI Components & Material 3 Theme**. We will translate the UI design system into Jetpack Compose. This involves defining custom color palettes for our dark theme, configuring typography, and building highly reusable stateless components (like the `GlassCard` and `WeatherIcon`) that will act as the building blocks for our screens.
+Moving into **Phase 5: Home Screen Implementation**. The goal is to build the `HomeViewModel` to manage UI state via `StateFlow`, and then assemble the complex Home Screen layout (large temperature display, horizontal hourly scroll, environmental metrics grid, and 5-day forecast list) using the foundational components built in Phase 4.

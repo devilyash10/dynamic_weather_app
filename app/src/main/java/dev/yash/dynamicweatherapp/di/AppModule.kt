@@ -8,7 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.yash.dynamicweatherapp.data.location.DefaultLocationTracker
-import dev.yash.dynamicweatherapp.data.remote.OpenWeatherApi
+import dev.yash.dynamicweatherapp.data.remote.OpenMeteoApi
 import dev.yash.dynamicweatherapp.data.repository.WeatherRepositoryImpl
 import dev.yash.dynamicweatherapp.domain.location.LocationTracker
 import dev.yash.dynamicweatherapp.domain.repository.WeatherRepository
@@ -22,12 +22,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideOpenWeatherApi(): OpenWeatherApi {
+    fun provideOpenWeatherApi(): OpenMeteoApi {
         return Retrofit.Builder()
-            .baseUrl("https://api.openweathermap.org/")
-            .addConverterFactory(GsonConverterFactory.create()) // Parses the JSON
+            // CHANGE THIS LINE:
+            .baseUrl("https://api.open-meteo.com/")
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(OpenWeatherApi::class.java)
+            .create(OpenMeteoApi::class.java)
     }
 
     @Provides
@@ -47,7 +48,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideWeatherRepository(api: OpenWeatherApi): WeatherRepository {
+    fun provideWeatherRepository(api: OpenMeteoApi): WeatherRepository {
         return WeatherRepositoryImpl(api)
     }
 }
