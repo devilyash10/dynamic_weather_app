@@ -64,7 +64,8 @@ private fun HourlyForecastItem(
         Icon(
             painter = painterResource(id = getWeatherIconResource(forecast.iconId)),
             contentDescription = "Weather Icon",
-            tint = NimbusTextWhite,
+            // Remove NimbusTextWhite and use Unspecified
+            tint = androidx.compose.ui.graphics.Color.Unspecified,
             modifier = Modifier.size(28.dp)
         )
 

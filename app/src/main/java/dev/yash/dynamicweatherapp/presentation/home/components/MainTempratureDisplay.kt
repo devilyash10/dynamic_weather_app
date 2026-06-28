@@ -33,8 +33,11 @@ fun MainTemperatureDisplay(
         androidx.compose.material3.Icon(
             painter = painterResource(id = getWeatherIconResource(currentWeather.iconId)),
             contentDescription = currentWeather.condition,
-            tint = NimbusAccentBlue,
-            modifier = Modifier.size(120.dp)
+            // THE FIX: Allow the SVG colors to show naturally
+            tint = androidx.compose.ui.graphics.Color.Unspecified,
+            modifier = Modifier
+                .size(120.dp)
+                .padding(bottom = 16.dp)
         )
 
         Spacer(modifier = Modifier.height(16.dp))

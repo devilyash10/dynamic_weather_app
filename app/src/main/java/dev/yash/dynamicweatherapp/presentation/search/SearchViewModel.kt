@@ -7,7 +7,10 @@ import dev.yash.dynamicweatherapp.data.local.dao.LocationDao
 import dev.yash.dynamicweatherapp.data.local.entity.SavedLocationEntity
 import dev.yash.dynamicweatherapp.domain.model.LocationSearchResult
 import dev.yash.dynamicweatherapp.domain.repository.WeatherRepository
+import dev.yash.dynamicweatherapp.domain.settings.SettingsRepository
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val repository: WeatherRepository,
-    private val locationDao: LocationDao // NEW: Inject Room DAO
+    private val locationDao: LocationDao,
+    private val settingsRepository: SettingsRepository // NEW: Inject Settings
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SearchState())
@@ -28,11 +32,28 @@ class SearchViewModel @Inject constructor(
     private var searchJob: Job? = null
 
     init {
-        // NEW: Continuously observe the Room Database.
-        // If an item is added, this flow emits automatically and updates the UI.
+        // 1. Observe Temperature Settings
+        viewModelScope.launch {
+            settingsRepository.temperatureUnit.collect { unit ->
+                _state.update { it.copy(temperatureUnit = unit) }
+            }
+        }
+
+        // 2. Observe Saved Locations and fetch live weather for each of them concurrently
         viewModelScope.launch {
             locationDao.getSavedLocations().collect { savedList ->
-                _state.update { it.copy(savedLocations = savedList) }
+                val deferredList = savedList.map { location ->
+                    async {
+                        val weatherResult = repository.getWeatherData(location.latitude, location.longitude)
+                        SavedLocationWeatherState(
+                            location = location,
+                            weatherInfo = weatherResult.getOrNull()
+                        )
+                    }
+                }
+                // Wait for all network calls to finish, then update the UI
+                val weatherList = deferredList.awaitAll()
+                _state.update { it.copy(savedLocations = weatherList) }
             }
         }
     }
@@ -70,10 +91,8 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    // NEW: Function to save a search result into the local database
     fun saveLocation(location: LocationSearchResult) {
         viewModelScope.launch {
-            // Prevent duplicates by checking if coordinates already exist
             val existing = locationDao.getLocationByCoordinates(location.latitude, location.longitude)
             if (existing == null) {
                 locationDao.insertLocation(
@@ -85,13 +104,11 @@ class SearchViewModel @Inject constructor(
                         longitude = location.longitude
                     )
                 )
-                // Clear search bar and results once saved successfully
                 _state.update { it.copy(searchQuery = "", searchResults = emptyList()) }
             }
         }
     }
 
-    // NEW: Function to delete a city from the database if they want to remove it
     fun deleteLocation(entity: SavedLocationEntity) {
         viewModelScope.launch {
             locationDao.deleteLocation(entity)

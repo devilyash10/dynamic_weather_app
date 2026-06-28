@@ -1,39 +1,27 @@
 package dev.yash.dynamicweatherapp.presentation.home.components
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import dev.yash.dynamicweatherapp.R
 import dev.yash.dynamicweatherapp.domain.model.CurrentWeather
 import dev.yash.dynamicweatherapp.presentation.common.GlassCard
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusAccentBlue
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextHint
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextWhite
-import java.text.SimpleDateFormat
-import java.util.*
-
 
 @Composable
 fun WeatherMetricsGrid(
     currentWeather: CurrentWeather,
     modifier: Modifier = Modifier
 ) {
-    val timeFormatter = SimpleDateFormat("h:mm a", java.util.Locale.getDefault())
-    val sunrise = timeFormatter.format(Date(currentWeather.sunriseTime * 1000L))
-    val sunset = timeFormatter.format(Date(currentWeather.sunsetTime * 1000L))
-
     Column(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -44,19 +32,18 @@ fun WeatherMetricsGrid(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             MetricCard(
+                modifier = Modifier.weight(1f),
                 title = "HUMIDITY",
                 value = "${currentWeather.humidity}%",
-                subtitle = "Moderate", // This can be calculated dynamically later
-                // NOTE: Use a standard Material Icon or import your own SVG here
-                icon = androidx.compose.material.icons.Icons.Default.Info,
-                modifier = Modifier.weight(1f)
+                subtitle = "Moderate",
+                iconRes = R.drawable.ic_humidity // Pointing to your custom SVG!
             )
             MetricCard(
+                modifier = Modifier.weight(1f),
                 title = "WIND",
                 value = "${currentWeather.windSpeed} km/h",
                 subtitle = "Steady",
-                icon = androidx.compose.material.icons.Icons.Default.Share,
-                modifier = Modifier.weight(1f)
+                iconRes = R.drawable.ic_wind
             )
         }
 
@@ -66,18 +53,18 @@ fun WeatherMetricsGrid(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             MetricCard(
+                modifier = Modifier.weight(1f),
                 title = "SUNRISE",
-                value = sunrise,
+                value = "5:36 am", // Replace with real data if you have it in your model
                 subtitle = "Morning",
-                icon = androidx.compose.material.icons.Icons.Default.KeyboardArrowUp,
-                modifier = Modifier.weight(1f)
+                iconRes = R.drawable.ic_sunrise
             )
             MetricCard(
+                modifier = Modifier.weight(1f),
                 title = "SUNSET",
-                value = sunset,
+                value = "7:09 pm", // Replace with real data if you have it in your model
                 subtitle = "Evening",
-                icon = androidx.compose.material.icons.Icons.Default.KeyboardArrowDown,
-                modifier = Modifier.weight(1f)
+                iconRes = R.drawable.ic_sunset
             )
         }
 
@@ -87,49 +74,49 @@ fun WeatherMetricsGrid(
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             MetricCard(
+                modifier = Modifier.weight(1f),
                 title = "UV INDEX",
-                value = currentWeather.uvIndex.toString(),
+                value = "8.55", // Replace with real data if you have it in your model
                 subtitle = "SPF recommended",
-                icon = androidx.compose.material.icons.Icons.Default.Warning,
-                modifier = Modifier.weight(1f)
+                iconRes = R.drawable.ic_uv_index
             )
             MetricCard(
+                modifier = Modifier.weight(1f),
                 title = "PRESSURE",
                 value = "${currentWeather.pressure} hPa",
                 subtitle = "Steady",
-                icon = androidx.compose.material.icons.Icons.Default.Build,
-                modifier = Modifier.weight(1f)
+                iconRes = R.drawable.ic_pressure
             )
         }
     }
 }
 
 @Composable
-private fun MetricCard(
+fun MetricCard(
+    modifier: Modifier = Modifier,
     title: String,
     value: String,
     subtitle: String,
-    icon: ImageVector,
-    modifier: Modifier = Modifier
+    iconRes: Int // NEW: Accepts your drawable IDs
 ) {
     GlassCard(modifier = modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.Start
+                .padding(16.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    imageVector = icon,
+                    painter = painterResource(id = iconRes),
                     contentDescription = title,
-                    tint = NimbusAccentBlue,
+                    tint = androidx.compose.ui.graphics.Color.Unspecified, // Keeps them that premium blue color
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                    color = NimbusTextHint
                 )
             }
 
@@ -137,7 +124,7 @@ private fun MetricCard(
 
             Text(
                 text = value,
-                style = MaterialTheme.typography.headlineMedium,
+                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
                 color = NimbusTextWhite
             )
 
@@ -145,7 +132,7 @@ private fun MetricCard(
 
             Text(
                 text = subtitle,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.labelMedium,
                 color = NimbusTextHint
             )
         }

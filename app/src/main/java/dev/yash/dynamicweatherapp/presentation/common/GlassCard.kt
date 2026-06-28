@@ -7,28 +7,35 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import dev.yash.dynamicweatherapp.presentation.theme.NimbusGlass
-import dev.yash.dynamicweatherapp.presentation.theme.NimbusGlassBorder
 
 @Composable
 fun GlassCard(
     modifier: Modifier = Modifier,
-    cornerRadius: Dp = 24.dp, // Default rounding from your UI
+    cornerRadius: Int = 20,
     content: @Composable () -> Unit
 ) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(cornerRadius))
-            .background(NimbusGlass)
+            .clip(RoundedCornerShape(cornerRadius.dp))
+            // The magic: A diagonal gradient from 12% white to 4% white creates the glass shine
+            .background(
+                brush = Brush.linearGradient(
+                    colors = listOf(
+                        Color.White.copy(alpha = 0.12f),
+                        Color.White.copy(alpha = 0.04f)
+                    )
+                )
+            )
+            // A slightly stronger border to define the glass edge
             .border(
                 width = 1.dp,
-                color = NimbusGlassBorder,
-                shape = RoundedCornerShape(cornerRadius)
+                color = Color.White.copy(alpha = 0.2f),
+                shape = RoundedCornerShape(cornerRadius.dp)
             )
     ) {
-        // The child views (text, icons, etc.) will be placed inside this Box
         content()
     }
 }

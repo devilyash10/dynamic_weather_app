@@ -1,28 +1,32 @@
 package dev.yash.dynamicweatherapp.presentation.home.components
 
-import dev.yash.dynamicweatherapp.domain.settings.TemperatureUnit
-import dev.yash.dynamicweatherapp.presentation.common.toFormattedTemp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import dev.yash.dynamicweatherapp.domain.model.DailyForecast
+import dev.yash.dynamicweatherapp.domain.settings.TemperatureUnit
 import dev.yash.dynamicweatherapp.presentation.common.GlassCard
 import dev.yash.dynamicweatherapp.presentation.common.getWeatherIconResource
-import dev.yash.dynamicweatherapp.presentation.theme.NimbusAccentBlue
+import dev.yash.dynamicweatherapp.presentation.common.toFormattedTemp
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextHint
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextWhite
 import java.text.SimpleDateFormat
-import java.util.*
-import kotlin.math.roundToInt
+import java.util.Date
+import java.util.Locale
 
 @Composable
 fun DailyForecastSection(
@@ -30,31 +34,38 @@ fun DailyForecastSection(
     temperatureUnit: TemperatureUnit,
     modifier: Modifier = Modifier
 ) {
-    GlassCard(modifier = modifier.fillMaxWidth()) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp)
-        ) {
-            Text(
-                text = "5-DAY FORECAST",
-                style = MaterialTheme.typography.titleMedium,
-                color = NimbusTextHint
-            )
+    Column(modifier = modifier.fillMaxWidth()) {
 
-            Spacer(modifier = Modifier.height(16.dp))
+        // 1. Header is now OUTSIDE the GlassCard
+        Text(
+            text = "5-DAY FORECAST",
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            ),
+            color = NimbusTextHint,
+            modifier = Modifier.padding(start = 8.dp, bottom = 12.dp)
+        )
 
-            // We use .take(5) to ensure we only show 5 days, even if the API returns 7 or 8
-            dailyForecasts.take(5).forEachIndexed { index, forecast ->
-                DailyForecastItem(
-                    forecast = forecast,
-                    isToday = index == 0,
-                    temperatureUnit = temperatureUnit // UPDATED
-                )
+        GlassCard(modifier = Modifier.fillMaxWidth()) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                val top5 = dailyForecasts.take(5)
 
-                // Add spacing between items, but not after the last one
-                if (index < 4) {
-                    Spacer(modifier = Modifier.height(16.dp))
+                top5.forEachIndexed { index, forecast ->
+                    DailyForecastItem(
+                        forecast = forecast,
+                        isToday = index == 0,
+                        temperatureUnit = temperatureUnit
+                    )
+
+                    // 2. Add subtle dividers between rows (except for the last one)
+                    if (index < top5.size - 1) {
+                        HorizontalDivider(
+                            color = Color.White.copy(alpha = 0.05f),
+                            thickness = 1.dp,
+                            modifier = Modifier.padding(horizontal = 20.dp)
+                        )
+                    }
                 }
             }
         }
@@ -67,70 +78,84 @@ private fun DailyForecastItem(
     isToday: Boolean,
     temperatureUnit: TemperatureUnit
 ) {
-    // Format the Unix timestamp to "Mon", "Tue", etc.
-    val dayFormat = SimpleDateFormat("EEE", java.util.Locale.getDefault())
-    val dayString = if (isToday) "Today" else dayFormat.format(Date(forecast.time * 1000L))
+    val date = Date(forecast.time * 1000L)
+    val dayFormat = SimpleDateFormat("EEE", Locale.getDefault())
+    val dayText = if (isToday) "Today" else dayFormat.format(date)
 
     Row(
-        modifier = Modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 20.dp, vertical = 16.dp), // Increased padding for premium feel
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        // 1. Day Name
+        // Day Name
         Text(
-            text = dayString,
-            style = MaterialTheme.typography.bodyLarge,
+            text = dayText,
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium),
             color = NimbusTextWhite,
-            modifier = Modifier.width(60.dp) // Fixed width to align icons perfectly
+            modifier = Modifier.width(64.dp)
         )
 
-        // 2. Weather Icon
+        // Weather Icon
         Icon(
             painter = painterResource(id = getWeatherIconResource(forecast.iconId)),
-            contentDescription = "Weather",
-            tint = NimbusTextWhite,
-            modifier = Modifier.size(24.dp)
+            contentDescription = "Weather Icon",
+            modifier = Modifier.size(28.dp),
+            // We set tint to Unspecified so custom colored SVGs will show their actual colors!
+            tint = Color.Unspecified
         )
 
-        // 3. Min/Max Temps with a visual temperature bar
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End,
-            modifier = Modifier.width(140.dp)
+        Spacer(modifier = Modifier.weight(1f))
+
+        // Min Temperature (Dimmed)
+        Text(
+            text = forecast.minTemp.toFormattedTemp(temperatureUnit),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Medium),
+            color = NimbusTextHint,
+            modifier = Modifier.width(40.dp),
+            textAlign = TextAlign.End
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        // The Layered Gradient Temperature Bar
+        Box(
+            modifier = Modifier
+                .width(80.dp)
+                .height(6.dp)
+                .background(
+                    color = Color.White.copy(alpha = 0.08f), // Dark background track
+                    shape = RoundedCornerShape(3.dp)
+                ),
+            contentAlignment = Alignment.CenterStart
         ) {
-            Text(
-                text = forecast.minTemp.toFormattedTemp(temperatureUnit), // UPDATED
-                style = MaterialTheme.typography.bodyLarge,
-                color = NimbusTextHint
-            )
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            // The little temperature bar from your UI design
+            // The colorful gradient range indicator
             Box(
                 modifier = Modifier
-                    .width(40.dp)
-                    .height(4.dp)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(NimbusAccentBlue.copy(alpha = 0.3f))
-            ) {
-                // Inside the bar, you could dynamically calculate width based on min/max later.
-                // For now, it's a solid accent bar matching the aesthetic.
-                Box(modifier = Modifier
+                    .fillMaxWidth(0.5f) // Width of the gradient bar
+                    .offset(x = 16.dp)  // Shift it slightly right
                     .fillMaxHeight()
-                    .fillMaxWidth(0.6f)
-                    .clip(RoundedCornerShape(2.dp))
-                    .background(NimbusAccentBlue)
-                )
-            }
-
-            Spacer(modifier = Modifier.width(12.dp))
-
-            Text(
-                text = forecast.maxTemp.toFormattedTemp(temperatureUnit), // UPDATED
-                style = MaterialTheme.typography.bodyLarge,
-                color = NimbusTextWhite
+                    .background(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF5E9BC8), // Soft Blue
+                                Color(0xFFECAE5E)  // Warm Yellow/Orange
+                            )
+                        ),
+                        shape = RoundedCornerShape(3.dp)
+                    )
             )
         }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        // Max Temperature (Bold)
+        Text(
+            text = forecast.maxTemp.toFormattedTemp(temperatureUnit),
+            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+            color = NimbusTextWhite,
+            modifier = Modifier.width(40.dp),
+            textAlign = TextAlign.End
+        )
     }
 }

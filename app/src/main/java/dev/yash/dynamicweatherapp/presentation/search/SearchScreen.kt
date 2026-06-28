@@ -1,14 +1,19 @@
 package dev.yash.dynamicweatherapp.presentation.search
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -18,12 +23,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import dev.yash.dynamicweatherapp.data.local.entity.SavedLocationEntity
 import dev.yash.dynamicweatherapp.domain.model.LocationSearchResult
 import dev.yash.dynamicweatherapp.presentation.common.GlassCard
+import dev.yash.dynamicweatherapp.presentation.common.getWeatherIconResource
+import dev.yash.dynamicweatherapp.presentation.common.toFormattedTemp
 import dev.yash.dynamicweatherapp.presentation.navigation.Screen
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusAccentBlue
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusDark
@@ -42,36 +51,109 @@ fun SearchScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(NimbusDark)
-            .padding(horizontal = 24.dp, vertical = 32.dp)
+            .statusBarsPadding()
+            .padding(horizontal = 24.dp, vertical = 16.dp)
     ) {
+        // MATCHING MOCKUP: Small, styled header
         Text(
-            text = "Search City",
-            style = MaterialTheme.typography.headlineMedium,
-            color = NimbusTextWhite
+            text = "MY CITIES",
+            style = MaterialTheme.typography.labelLarge.copy(
+                fontWeight = FontWeight.Bold,
+                letterSpacing = 1.sp
+            ),
+            color = NimbusAccentBlue
         )
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
+        // MATCHING MOCKUP: Search Bar
         OutlinedTextField(
             value = state.searchQuery,
             onValueChange = { viewModel.onSearchQueryChange(it) },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("E.g., London, Tokyo, New York", color = NimbusTextHint) },
+            placeholder = { Text("Search for a city...", color = NimbusTextHint) },
             leadingIcon = {
-                Icon(imageVector = Icons.Default.Search, contentDescription = "Search", tint = NimbusTextHint)
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = "Search",
+                    tint = NimbusTextHint
+                )
             },
             colors = OutlinedTextFieldDefaults.colors(
                 focusedTextColor = NimbusTextWhite,
                 unfocusedTextColor = NimbusTextWhite,
                 cursorColor = NimbusAccentBlue,
                 focusedBorderColor = NimbusAccentBlue,
-                unfocusedBorderColor = NimbusTextHint.copy(alpha = 0.5f),
+                unfocusedBorderColor = Color.Transparent,
                 focusedContainerColor = Color.White.copy(alpha = 0.05f),
                 unfocusedContainerColor = Color.White.copy(alpha = 0.05f)
             ),
             shape = RoundedCornerShape(16.dp),
             singleLine = true
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // MATCHING MOCKUP: GPS Button
+            GlassCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(16.dp))
+                    .clickable {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    }
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Place, // Or Icons.Default.Navigation
+                        contentDescription = "GPS",
+                        tint = NimbusAccentBlue,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = "Use Current GPS Location",
+                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = NimbusAccentBlue
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // IMPROVED: Subtle, premium instructional hint
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    imageVector = androidx.compose.material.icons.Icons.Default.Info,
+                    contentDescription = "Info",
+                    tint = NimbusTextHint.copy(alpha = 0.7f),
+                    modifier = Modifier.size(14.dp)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "Long press a saved location to delete it",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = NimbusTextHint.copy(alpha = 0.7f) // Muted color so it acts as a subtle hint
+                )
+            }
+        }
+
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -81,20 +163,32 @@ fun SearchScreen(
                     CircularProgressIndicator(color = NimbusAccentBlue)
                 }
             }
+
             state.searchQuery.length >= 2 && state.error != null -> {
-                Text(text = state.error!!, color = NimbusTextHint, modifier = Modifier.padding(16.dp))
+                Text(
+                    text = state.error!!,
+                    color = NimbusTextHint,
+                    modifier = Modifier.padding(16.dp)
+                )
             }
+
             state.searchQuery.length >= 2 && state.searchResults.isNotEmpty() -> {
                 LazyColumn(
                     verticalArrangement = Arrangement.spacedBy(12.dp),
                     contentPadding = PaddingValues(bottom = 100.dp)
                 ) {
-                    items(state.searchResults) { result ->
+                    items(state.searchResults.size) { index ->
                         SearchResultItem(
-                            location = result,
+                            location = state.searchResults[index],
                             onClick = {
-                                viewModel.saveLocation(result)
-                                navController.navigate(Screen.Home.passCoordinates(result.latitude, result.longitude, result.name)) {
+                                viewModel.saveLocation(state.searchResults[index])
+                                navController.navigate(
+                                    Screen.Home.passCoordinates(
+                                        state.searchResults[index].latitude,
+                                        state.searchResults[index].longitude,
+                                        state.searchResults[index].name
+                                    )
+                                ) {
                                     popUpTo(Screen.Home.route) { inclusive = true }
                                 }
                             }
@@ -102,38 +196,31 @@ fun SearchScreen(
                     }
                 }
             }
-            else -> {
-                Column(modifier = Modifier.fillMaxWidth()) {
-                    Text(
-                        text = "SAVED LOCATIONS",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = NimbusTextHint
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
 
-                    if (state.savedLocations.isEmpty()) {
-                        Text(
-                            text = "No saved locations yet. Search for cities above to add them.",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = NimbusTextHint,
-                            modifier = Modifier.padding(vertical = 8.dp)
-                        )
-                    } else {
-                        LazyColumn(
-                            verticalArrangement = Arrangement.spacedBy(12.dp),
-                            contentPadding = PaddingValues(bottom = 100.dp)
-                        ) {
-                            items(state.savedLocations) { dbLocation ->
-                                SavedLocationRow(
-                                    location = dbLocation,
-                                    onDeleteClick = { viewModel.deleteLocation(dbLocation) },
-                                    onClick = {
-                                        navController.navigate(Screen.Home.passCoordinates(dbLocation.latitude, dbLocation.longitude, dbLocation.name)) {
-                                            popUpTo(Screen.Home.route) { inclusive = true }
-                                        }
+            else -> {
+                if (state.savedLocations.isNotEmpty()) {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        contentPadding = PaddingValues(bottom = 100.dp)
+                    ) {
+                        itemsIndexed(state.savedLocations) { index, dbLocationState ->
+                            SavedLocationRow(
+                                state = dbLocationState,
+                                isFirstItem = index == 0, // Adds the blue dot indicator to the first item like the mockup
+                                temperatureUnit = state.temperatureUnit,
+                                onDeleteClick = { viewModel.deleteLocation(dbLocationState.location) },
+                                onClick = {
+                                    navController.navigate(
+                                        Screen.Home.passCoordinates(
+                                            dbLocationState.location.latitude,
+                                            dbLocationState.location.longitude,
+                                            dbLocationState.location.name
+                                        )
+                                    ) {
+                                        popUpTo(Screen.Home.route) { inclusive = true }
                                     }
-                                )
-                            }
+                                }
+                            )
                         }
                     }
                 }
@@ -142,12 +229,15 @@ fun SearchScreen(
     }
 }
 
+
+
+// Active Network Search Results
 @Composable
 fun SearchResultItem(location: LocationSearchResult, onClick: () -> Unit) {
     GlassCard(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
+            .clip(RoundedCornerShape(20.dp))
             .clickable { onClick() }
     ) {
         Row(
@@ -165,35 +255,94 @@ fun SearchResultItem(location: LocationSearchResult, onClick: () -> Unit) {
     }
 }
 
+// MATCHING MOCKUP: Saved Locations with Live Weather Data
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SavedLocationRow(
-    location: SavedLocationEntity,
+    state: SavedLocationWeatherState,
+    isFirstItem: Boolean,
+    temperatureUnit: dev.yash.dynamicweatherapp.domain.settings.TemperatureUnit,
     onDeleteClick: () -> Unit,
-    onClick: () -> Unit // Added missing click handling parameter
+    onClick: () -> Unit
 ) {
     GlassCard(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(24.dp))
-            .clickable { onClick() } // Connected row selection click layout logic
+            .clip(RoundedCornerShape(20.dp))
+            // NEW: Long Press to delete!
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onDeleteClick
+            )
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp),
+            modifier = Modifier.fillMaxWidth().padding(20.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            // LEFT SIDE: Blue Dot, City Name, Country Pill, Condition Text
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(imageVector = Icons.Default.LocationOn, contentDescription = null, tint = NimbusAccentBlue, modifier = Modifier.size(24.dp))
-                Spacer(modifier = Modifier.width(16.dp))
+                // The blue indicator dot
+                if (isFirstItem) {
+                    Box(modifier = Modifier.size(8.dp).background(NimbusAccentBlue, CircleShape))
+                    Spacer(modifier = Modifier.width(12.dp))
+                } else {
+                    Spacer(modifier = Modifier.width(20.dp))
+                }
+
                 Column {
-                    Text(text = location.name, style = MaterialTheme.typography.titleMedium, color = NimbusTextWhite)
-                    val subtitle = if (!location.admin1.isNullOrEmpty()) "${location.admin1}, ${location.country}" else location.country
-                    Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = NimbusTextHint)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = state.location.name,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                            color = NimbusTextWhite
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        // Country Pill (e.g., "US", "GB")
+                        Box(
+                            modifier = Modifier
+                                .background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                                .padding(horizontal = 6.dp, vertical = 2.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = state.location.country.take(2).uppercase(),
+                                style = MaterialTheme.typography.labelSmall,
+                                color = NimbusTextHint
+                            )
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Condition Text (e.g., "Partly Cloudy")
+                    Text(
+                        text = state.weatherInfo?.current?.condition ?: "Loading...",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = NimbusTextHint
+                    )
                 }
             }
 
-            IconButton(onClick = onDeleteClick) {
-                Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Location", tint = Color.Red.copy(alpha = 0.7f))
+            // RIGHT SIDE: Weather Icon and Temperature
+            if (state.weatherInfo != null) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        painter = painterResource(id = getWeatherIconResource(state.weatherInfo.current.iconId)),
+                        contentDescription = null,
+                        tint = Color.Unspecified, // Allows colored icons
+                        modifier = Modifier.size(28.dp)
+                    )
+                    Spacer(modifier = Modifier.width(12.dp))
+                    Text(
+                        text = state.weatherInfo.current.temperature.toFormattedTemp(temperatureUnit),
+                        style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
+                        color = NimbusTextWhite
+                    )
+                }
+            } else {
+                CircularProgressIndicator(color = NimbusAccentBlue, modifier = Modifier.size(24.dp))
             }
         }
     }
