@@ -1,5 +1,6 @@
 package dev.yash.dynamicweatherapp.presentation.common
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
@@ -11,8 +12,10 @@ import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -33,7 +36,7 @@ fun CustomBottomNavBar(navController: NavController) {
     ) {
         // 1. Home Tab
         NavigationBarItem(
-            selected = currentRoute == Screen.Home.route,
+            selected = currentRoute?.substringBefore("/")?.substringBefore("?") == Screen.Home.route?.substringBefore("/")?.substringBefore("?"),
             onClick = {
                 navController.navigate(Screen.Home.route) {
                     popUpTo(navController.graph.findStartDestination().id) {
@@ -44,7 +47,7 @@ fun CustomBottomNavBar(navController: NavController) {
                 }
             },
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-            label = { Text("Home") },
+            label = { Text("Home", fontSize = 14.sp) },
             colors = navigationBarColors()
         )
 
@@ -60,8 +63,8 @@ fun CustomBottomNavBar(navController: NavController) {
                     restoreState = true
                 }
             },
-            icon = { Icon(Icons.Default.Search, contentDescription = "Cities") },
-            label = { Text("Cities") },
+            icon = { Icon(Icons.Default.Search, contentDescription = "Search Cities") },
+            label = { Text("Search Cities", fontSize = 14.sp) },
             colors = navigationBarColors()
         )
 
@@ -78,7 +81,7 @@ fun CustomBottomNavBar(navController: NavController) {
                 }
             },
             icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },
-            label = { Text("Settings") },
+            label = { Text("Settings", fontSize = 14.sp) },
             colors = navigationBarColors()
         )
     }

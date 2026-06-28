@@ -1,5 +1,6 @@
 package dev.yash.dynamicweatherapp.presentation.settings
 
+import android.R
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,6 +28,8 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.yash.dynamicweatherapp.domain.settings.TemperatureUnit
 import dev.yash.dynamicweatherapp.presentation.common.GlassCard
+import dev.yash.dynamicweatherapp.presentation.settings.components.AboutDeveloperDialog
+import dev.yash.dynamicweatherapp.presentation.settings.components.PrivacyPolicyDialog
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusAccentBlue
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusDark
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextHint
@@ -35,6 +38,7 @@ import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextWhite
 @Composable
 fun SettingsScreen(
     viewModel: SettingsViewModel = hiltViewModel()
+
 ) {
     val temperatureUnit by viewModel.temperatureUnit.collectAsState()
     val context = LocalContext.current
@@ -46,6 +50,7 @@ fun SettingsScreen(
     var weatherNotifications by remember { mutableStateOf(true) }
     var hourlyWidget by remember { mutableStateOf(false) }
     var showDeveloperDialog by remember { mutableStateOf(false) }
+    var showPrivacyPolicyDialog by remember { mutableStateOf(false) }
 
     val showUnavailableToast = {
         Toast.makeText(context, "Service currently unavailable", Toast.LENGTH_SHORT).show()
@@ -88,7 +93,11 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Temperature Unit", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = NimbusTextWhite)
+                        Text("Temperature Unit", style = MaterialTheme.typography.labelLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp, // Bumped up from the default 12sp
+                            letterSpacing = 1.sp
+                        ), color = NimbusTextWhite)
                         Spacer(modifier = Modifier.height(4.dp))
                         Text(if (temperatureUnit == TemperatureUnit.CELSIUS) "Celsius (°C)" else "Fahrenheit (°F)", style = MaterialTheme.typography.bodyMedium, color = NimbusTextHint)
                     }
@@ -119,7 +128,11 @@ fun SettingsScreen(
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
                             "Background Sync",
-                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            style = MaterialTheme.typography.labelLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp, // Bumped up from the default 12sp
+                                letterSpacing = 1.sp
+                            ),
                             color = NimbusTextWhite
                         )
                     }
@@ -149,7 +162,7 @@ fun SettingsScreen(
                     }
 
                     SyncOptionRow(
-                        title = "Every hour",
+                        title = "Every 1 hour",
                         selected = syncInterval == 60L
                     ) {
                         viewModel.updateSyncInterval(context, 60L)
@@ -164,22 +177,22 @@ fun SettingsScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // SECTION 3: DISPLAY (Missing from previous version)
-            GlassCard(modifier = Modifier.fillMaxWidth()) {
-                Column(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
-                    Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.LightMode, contentDescription = null, tint = NimbusAccentBlue, modifier = Modifier.size(24.dp))
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text("Display", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = NimbusTextWhite)
-                    }
-
-                    DisplayToggleRow(title = "Dynamic Backgrounds", subtitle = "Animated gradients based on weather", checked = dynamicBackgrounds) { dynamicBackgrounds = it }
-                    DisplayToggleRow(title = "Weather Notifications", subtitle = "Severe weather alerts", checked = weatherNotifications) { weatherNotifications = it }
-                    DisplayToggleRow(title = "Hourly Forecast Widget", subtitle = "Show on lock screen", checked = hourlyWidget) { hourlyWidget = it }
-                }
-            }
+//            Spacer(modifier = Modifier.height(24.dp))
+//
+//            // SECTION 3: DISPLAY (Missing from previous version)
+//            GlassCard(modifier = Modifier.fillMaxWidth()) {
+//                Column(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
+//                    Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+//                        Icon(imageVector = Icons.Default.LightMode, contentDescription = null, tint = NimbusAccentBlue, modifier = Modifier.size(24.dp))
+//                        Spacer(modifier = Modifier.width(12.dp))
+//                        Text("Display", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = NimbusTextWhite)
+//                    }
+//
+//                    DisplayToggleRow(title = "Dynamic Backgrounds", subtitle = "Animated gradients based on weather", checked = dynamicBackgrounds) { dynamicBackgrounds = it }
+//                    DisplayToggleRow(title = "Weather Notifications", subtitle = "Severe weather alerts", checked = weatherNotifications) { weatherNotifications = it }
+//                    DisplayToggleRow(title = "Hourly Forecast Widget", subtitle = "Show on lock screen", checked = hourlyWidget) { hourlyWidget = it }
+//                }
+//            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
@@ -192,7 +205,11 @@ fun SettingsScreen(
                         verticalAlignment = Alignment.CenterVertically) {
                         Icon(imageVector = Icons.Default.Info, contentDescription = null, tint = NimbusAccentBlue, modifier = Modifier.size(24.dp))
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text("About", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = NimbusTextWhite)
+                        Text("About", style = MaterialTheme.typography.labelLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp, // Bumped up from the default 12sp
+                            letterSpacing = 1.sp
+                        ), color = NimbusTextWhite)
                     }
 
                     SettingsInfoRow(title = "Version", value = "2.4.1")
@@ -204,7 +221,7 @@ fun SettingsScreen(
                     SettingsActionRow(title = "Rate your experience", onClick = showUnavailableToast)
                     HorizontalDivider(color = Color.White.copy(alpha = 0.05f), modifier = Modifier.padding(horizontal = 20.dp))
 
-                    SettingsActionRow(title = "Privacy Policy", onClick = showUnavailableToast)
+                    SettingsActionRow(title = "Privacy Policy", onClick = {showPrivacyPolicyDialog = true})
                     HorizontalDivider(color = Color.White.copy(alpha = 0.05f), modifier = Modifier.padding(horizontal = 20.dp))
 
                     SettingsActionRow(title = "About the Developer", onClick = { showDeveloperDialog = true })
@@ -215,7 +232,7 @@ fun SettingsScreen(
 
             // Footer branding
             Text(
-                text = "Weather data powered by Open-Meteo API\n© 2026 Dynamic Weather",
+                text = "Weather data powered by Open-Meteo API\n© 2026 AtmosLive Weather",
                 style = MaterialTheme.typography.labelMedium,
                 color = NimbusTextHint.copy(alpha = 0.5f),
                 textAlign = TextAlign.Center,
@@ -224,38 +241,46 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(120.dp))
         }
+        if (showPrivacyPolicyDialog){
+            PrivacyPolicyDialog (onDismiss = { showPrivacyPolicyDialog = false} )
 
-        // --- MODERN GLASSMORPHIC DIALOGUE OVERLAY ---
-        if (showDeveloperDialog) {
-            Dialog(onDismissRequest = { showDeveloperDialog = false }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.6f)).padding(horizontal = 32.dp), contentAlignment = Alignment.Center) {
-                    GlassCard(modifier = Modifier.fillMaxWidth().wrapContentHeight(), cornerRadius = 28) {
-                        Column(modifier = Modifier.fillMaxWidth().padding(28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                            Box(modifier = Modifier.size(80.dp).background(NimbusAccentBlue.copy(alpha = 0.15f), CircleShape), contentAlignment = Alignment.Center) {
-                                Icon(imageVector = Icons.Default.Person, contentDescription = "Developer", tint = NimbusAccentBlue, modifier = Modifier.size(38.dp))
-                            }
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text("Yash", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold), color = NimbusTextWhite)
-                            Text("Android Engineer", style = MaterialTheme.typography.labelLarge, color = NimbusAccentBlue)
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                "Passionate developer specialized in clean architectures, fluid Jetpack Compose layouts, and building performant mobile experiences.",
-                                style = MaterialTheme.typography.bodyMedium, color = NimbusTextHint, textAlign = TextAlign.Center, lineHeight = 22.sp
-                            )
-                            Spacer(modifier = Modifier.height(28.dp))
-                            Button(
-                                onClick = { showDeveloperDialog = false },
-                                modifier = Modifier.fillMaxWidth().height(48.dp),
-                                colors = ButtonDefaults.buttonColors(containerColor = NimbusAccentBlue, contentColor = Color.White),
-                                shape = RoundedCornerShape(14.dp)
-                            ) {
-                                Text("Close", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
-                            }
-                        }
-                    }
-                }
-            }
         }
+
+        if (showDeveloperDialog){
+            AboutDeveloperDialog(onDismiss = { showDeveloperDialog = false })
+        }
+
+//        // --- MODERN GLASSMORPHIC DIALOGUE OVERLAY ---
+//        if (showDeveloperDialog) {
+//            Dialog(onDismissRequest = { showDeveloperDialog = false }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+//                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.6f)).padding(horizontal = 32.dp), contentAlignment = Alignment.Center) {
+//                    GlassCard(modifier = Modifier.fillMaxWidth().wrapContentHeight(), cornerRadius = 28) {
+//                        Column(modifier = Modifier.fillMaxWidth().padding(28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+//                            Box(modifier = Modifier.size(80.dp).background(NimbusAccentBlue.copy(alpha = 0.15f), CircleShape), contentAlignment = Alignment.Center) {
+//                                Icon(imageVector = Icons.Default.Person, contentDescription = "Developer", tint = NimbusAccentBlue, modifier = Modifier.size(38.dp))
+//                            }
+//                            Spacer(modifier = Modifier.height(16.dp))
+//                            Text("Yash", style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold), color = NimbusTextWhite)
+//                            Text("Android Engineer", style = MaterialTheme.typography.labelLarge, color = NimbusAccentBlue)
+//                            Spacer(modifier = Modifier.height(16.dp))
+//                            Text(
+//                                "Passionate developer specialized in clean architectures, fluid Jetpack Compose layouts, and building performant mobile experiences.",
+//                                style = MaterialTheme.typography.bodyMedium, color = NimbusTextHint, textAlign = TextAlign.Center, lineHeight = 22.sp
+//                            )
+//                            Spacer(modifier = Modifier.height(28.dp))
+//                            Button(
+//                                onClick = { showDeveloperDialog = false },
+//                                modifier = Modifier.fillMaxWidth().height(48.dp),
+//                                colors = ButtonDefaults.buttonColors(containerColor = NimbusAccentBlue, contentColor = Color.White),
+//                                shape = RoundedCornerShape(14.dp)
+//                            ) {
+//                                Text("Close", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold))
+//                            }
+//                        }
+//                    }
+//                }
+//            }
+//        }
     }
 }
 
@@ -264,7 +289,7 @@ fun SettingsScreen(
 @Composable
 fun SyncOptionRow(title: String, selected: Boolean, onClick: () -> Unit) {
     Row(
-        modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(horizontal = 20.dp, vertical = 12.dp),
+        modifier = Modifier.fillMaxWidth().clickable { onClick() }.padding(horizontal = 20.dp, vertical = 6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         RadioButton(
@@ -273,28 +298,33 @@ fun SyncOptionRow(title: String, selected: Boolean, onClick: () -> Unit) {
             colors = RadioButtonDefaults.colors(selectedColor = NimbusAccentBlue, unselectedColor = NimbusTextHint)
         )
         Spacer(modifier = Modifier.width(12.dp))
-        Text(text = title, style = MaterialTheme.typography.titleMedium, color = NimbusTextWhite)
-    }
-}
-
-@Composable
-fun DisplayToggleRow(title: String, subtitle: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(text = title, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = NimbusTextWhite)
-            Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = NimbusTextHint)
-        }
-        Switch(
-            checked = checked,
-            onCheckedChange = onCheckedChange,
-            colors = SwitchDefaults.colors(checkedTrackColor = NimbusAccentBlue, uncheckedTrackColor = Color.White.copy(alpha = 0.1f))
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontSize = 12.sp ), // Bumped up from the default 12sp
+            color = NimbusTextWhite
         )
     }
 }
+//
+//@Composable
+//fun DisplayToggleRow(title: String, subtitle: String, checked: Boolean, onCheckedChange: (Boolean) -> Unit) {
+//    Row(
+//        modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 12.dp),
+//        verticalAlignment = Alignment.CenterVertically,
+//        horizontalArrangement = Arrangement.SpaceBetween
+//    ) {
+//        Column(modifier = Modifier.weight(1f)) {
+//            Text(text = title, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = NimbusTextWhite)
+//            Text(text = subtitle, style = MaterialTheme.typography.bodyMedium, color = NimbusTextHint)
+//        }
+//        Switch(
+//            checked = checked,
+//            onCheckedChange = onCheckedChange,
+//            colors = SwitchDefaults.colors(checkedTrackColor = NimbusAccentBlue, uncheckedTrackColor = Color.White.copy(alpha = 0.1f))
+//        )
+//    }
+//}
 
 @Composable
 fun SettingsInfoRow(title: String, value: String) {

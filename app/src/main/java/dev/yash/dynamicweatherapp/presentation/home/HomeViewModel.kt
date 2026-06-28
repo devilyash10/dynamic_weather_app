@@ -38,11 +38,15 @@ class HomeViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            settingsRepository.temperatureUnit.collect { unit ->
-                _state.update { it.copy(temperatureUnit = unit) }
+            settingsRepository.hasAcceptedPrivacyPolicy.collect { accepted ->
+                _state.update { it.copy(hasAcceptedPrivacyPolicy = accepted) }
+
+                // Safe safeguard: Only trigger weather loading if they have accepted
+                if (accepted) {
+                    loadWeatherInfo()
+                }
             }
         }
-        loadWeatherInfo()
     }
 
     fun loadWeatherInfo() {
@@ -97,6 +101,12 @@ class HomeViewModel @Inject constructor(
             addresses?.firstOrNull()?.locality ?: "Current Location"
         } catch (e: Exception) {
             "Current Location"
+        }
+    }
+    fun acceptPrivacyPolicy() {
+        viewModelScope.launch {
+            // Persist the selection to local DataStore storage
+            settingsRepository.setPrivacyPolicyAccepted(true)
         }
     }
 }

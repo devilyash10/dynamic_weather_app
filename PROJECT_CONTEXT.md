@@ -142,3 +142,31 @@ Built a modern, Compose-style home screen widget for quick weather access.
 - Programmed the widget to query the local Room database for the first saved city and fetch live background updates.
 - Resolved ColorProvider Day/Night mode compilation requirements for custom Glance text and background colors.
   "
+
+git commit -m "feat(ui): implement premium empty states for networking and search" -m "
+Finalized UI/UX edge cases to ensure graceful degradation and intuitive onboarding.
+
+1. Error Handling:
+- Created reusable EmptyStateView with glassmorphic styling and a retry callback.
+- Refactored HomeScreen to isolate vertical scrolling exclusively to the successful data state, fixing alignment issues for loading spinners and error screens.
+
+2. Search Onboarding:
+- Implemented an intuitive empty state in SearchScreen to guide new users to use the search bar when the Room database is empty.
+- Applied consistent Nimbus theme styling across all fallback UIs.
+  "
+  git commit -m "chore(release): finalize onboarding, privacy policy, and UI polish" -m "
+  Completed final pre-release checklist, ensuring legal compliance, UI consistency, and robust state management.
+
+1. First-Time Onboarding & Privacy:
+- Engineered a one-time PrivacyPolicyDialog overlay for first-time app launches.
+- Integrated DataStore preferences to persistently track privacy policy acceptance.
+- Resolved race conditions between DataStore initialization and Android native permission launchers by utilizing nullable boolean state flows.
+
+2. Navigation & Routing Fixes:
+- Fixed CustomBottomNavBar active state tracking. Implemented URL parsing to strip dynamic route arguments (coordinates/city names), ensuring the Home icon correctly highlights regardless of the injected parameters.
+
+3. Typography & UI Polish:
+- Scaled up typography across the Settings screen and Dialogs to standard Android reading sizes (14sp/16sp) for improved accessibility.
+- Revamped the AboutDeveloperDialog with a personalized professional biography and mandatory Open-Meteo API attribution to ensure legal compliance.
+- Removed deprecated UI toggles from the Settings screen to ensure 100% feature functionality for portfolio presentation.
+  "

@@ -22,6 +22,7 @@ import dev.yash.dynamicweatherapp.presentation.home.components.HourlyForecastRow
 import dev.yash.dynamicweatherapp.presentation.home.components.LocationHeader
 import dev.yash.dynamicweatherapp.presentation.home.components.MainTemperatureDisplay
 import dev.yash.dynamicweatherapp.presentation.home.components.WeatherMetricsGrid
+import dev.yash.dynamicweatherapp.presentation.settings.components.PrivacyPolicyDialog
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusAccentBlue
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusDark
 
@@ -45,19 +46,20 @@ fun HomeScreen(
         }
     }
 
-    // 2. Trigger the popup exactly once when the Home screen is first opened
-    LaunchedEffect(Unit) {
-        locationPermissionLauncher.launch(
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.POST_NOTIFICATIONS
+    // 2. MODIFIED: Trigger permissions ONLY when we definitively know it is true
+    LaunchedEffect(state.hasAcceptedPrivacyPolicy) {
+        if (state.hasAcceptedPrivacyPolicy == true) {
+            locationPermissionLauncher.launch(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.POST_NOTIFICATIONS
+                )
             )
-        )
+        }
     }
 
     // 3. Standard UI Rendering
-    // We use a Box as the root so Loading and Error states can perfectly center themselves
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -73,19 +75,16 @@ fun HomeScreen(
             }
 
             state.error != null -> {
-                // Implementing our new premium Empty State UI
                 EmptyStateView(
                     title = "Data Unavailable",
                     message = state.error ?: "We couldn't retrieve the weather data. Please check your connection.",
                     onRetry = {
-                        // Tells the ViewModel to try fetching the data again
                         viewModel.loadWeatherInfo()
                     }
                 )
             }
 
             state.weatherInfo != null -> {
-                // The scrollable Column is now only active when we actually have weather data
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -126,6 +125,15 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(100.dp))
                 }
             }
+        }
+
+        // 4. NEW: Specifically check if it is definitively false
+        if (state.hasAcceptedPrivacyPolicy == false && !state.isLoading) {
+            PrivacyPolicyDialog(
+                onDismiss = {
+                    viewModel.acceptPrivacyPolicy()
+                }
+            )
         }
     }
 }

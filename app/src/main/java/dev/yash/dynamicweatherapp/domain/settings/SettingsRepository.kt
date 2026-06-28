@@ -15,4 +15,7 @@ interface SettingsRepository {
     // 2. Background Sync Blueprints
     val syncInterval: Flow<Long>
     suspend fun setSyncInterval(minutes: Long)
+
+    val hasAcceptedPrivacyPolicy: Flow<Boolean>
+    suspend fun setPrivacyPolicyAccepted(accepted: Boolean)
 }

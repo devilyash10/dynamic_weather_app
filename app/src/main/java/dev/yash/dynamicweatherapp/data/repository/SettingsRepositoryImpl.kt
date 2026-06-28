@@ -56,4 +56,16 @@ class SettingsRepositoryImpl(
             preferences[IS_CELSIUS_KEY] = unit == TemperatureUnit.CELSIUS
         }
     }
+
+    private val PRIVACY_POLICY_KEY = booleanPreferencesKey("privacy_policy_accepted")
+
+    override val hasAcceptedPrivacyPolicy: Flow<Boolean> = dataStore.data.map { prefs ->
+        prefs[PRIVACY_POLICY_KEY] ?: false // Default to false for first-time users!
+    }
+
+    override suspend fun setPrivacyPolicyAccepted(accepted: Boolean) {
+        dataStore.edit { prefs ->
+            prefs[PRIVACY_POLICY_KEY] = accepted
+        }
+    }
 }

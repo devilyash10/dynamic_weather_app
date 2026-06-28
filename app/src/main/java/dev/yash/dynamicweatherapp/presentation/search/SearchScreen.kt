@@ -61,6 +61,7 @@ fun SearchScreen(
             text = "MY CITIES",
             style = MaterialTheme.typography.labelLarge.copy(
                 fontWeight = FontWeight.Bold,
+                fontSize = 14.sp,
                 letterSpacing = 1.sp
             ),
             color = NimbusAccentBlue
