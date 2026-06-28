@@ -99,4 +99,8 @@ dependencies {
     ksp("androidx.room:room-compiler:$roomVersion")
 
     implementation("androidx.compose.material:material-icons-extended")
+
+    // Jetpack Glance for building Compose-style App Widgets
+    implementation("androidx.glance:glance-appwidget:1.1.0")
+    implementation("androidx.glance:glance-material3:1.1.0")
 }

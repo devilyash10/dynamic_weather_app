@@ -90,3 +90,41 @@ Extensive UI/UX overhaul to match premium design mockups across the app.
 - Implemented `SettingsViewModel` with DataStore integration for global temperature unit toggling.
 - Built a custom, animated glassmorphic dialogue box overlay for the 'About the Developer' section.
   "
+
+
+
+git commit -m "feat(navigation): implement premium screen transitions and tab state management" -m "
+Upgraded app navigation architecture to improve user experience and memory efficiency.
+
+1. Bottom Navigation Polish:
+- Implemented robust backstack management in CustomBottomNavBar using `saveState` and `restoreState`.
+- Prevented infinite stack growth by popping to `findStartDestination().id` on tab selection.
+- Tabs now correctly retain their individual states (e.g., search queries persist when switching tabs).
+
+2. Screen Transitions:
+- Replaced default instant cuts with built-in Jetpack Compose AnimatedContentTransitionScope.
+- Configured global `enterTransition` and `exitTransition` to slide left/right with a 300ms tween.
+- Configured corresponding `popEnterTransition` and `popExitTransition` to reverse the slide on back navigation.
+- Fixed Scaffold `paddingValues` alignment in MainActivity to prevent bottom bar UI overlap.
+  "
+
+
+  
+
+git commit -m "feat(sync): implement background weather sync and severe weather alerts" -m "
+Built a battery-optimized background engine using WorkManager and DataStore.
+
+1. Background Engine:
+- Implemented WeatherSyncWorker to silently fetch background updates for saved locations.
+- Integrated HiltWorkerFactory in DynamicWeatherApp to enable dependency injection (Repository/Dao) inside WorkManager.
+- Created WeatherWorkScheduler to handle periodic requests based on network and battery constraints.
+
+2. DataStore Persistence:
+- Refactored SettingsRepository and SettingsRepositoryImpl to persistently store the user's sync interval preferences.
+- Wired SettingsViewModel to emit persistent Flow states to the Settings UI, replacing temporary memory states.
+- Bound Settings UI radio buttons (Never, 15, 30, 60, 360 mins) to DataStore logic.
+
+3. Severe Weather Alerts:
+- Added Android 13+ POST_NOTIFICATIONS permission and created the 'WEATHER_ALERTS' notification channel.
+- Programmed WeatherSyncWorker to evaluate WMO icon codes (65, 82, 95, 96, 99, 11d, 11n, 09d, 09n) and trigger high-priority push notifications when severe weather is detected.
+  "
