@@ -128,3 +128,17 @@ Built a battery-optimized background engine using WorkManager and DataStore.
 - Added Android 13+ POST_NOTIFICATIONS permission and created the 'WEATHER_ALERTS' notification channel.
 - Programmed WeatherSyncWorker to evaluate WMO icon codes (65, 82, 95, 96, 99, 11d, 11n, 09d, 09n) and trigger high-priority push notifications when severe weather is detected.
   "
+
+git commit -m "feat(widget): implement Jetpack Glance home screen widget" -m "
+Built a modern, Compose-style home screen widget for quick weather access.
+
+1. Widget Architecture:
+- Implemented WeatherWidget using GlanceAppWidget and GlanceModifier for a glassmorphic UI.
+- Created WeatherWidgetReceiver to handle Android widget broadcast events.
+- Registered widget metadata (weather_widget_info.xml) specifying sizing and grid dimensions.
+
+2. Data Integration & UI Fixes:
+- Configured WidgetEntryPoint to allow the Glance widget to safely inject LocationDao and WeatherRepository.
+- Programmed the widget to query the local Room database for the first saved city and fetch live background updates.
+- Resolved ColorProvider Day/Night mode compilation requirements for custom Glance text and background colors.
+  "

@@ -26,10 +26,12 @@ import dev.yash.dynamicweatherapp.presentation.home.HomeScreen
 import dev.yash.dynamicweatherapp.presentation.navigation.Screen
 import dev.yash.dynamicweatherapp.presentation.theme.DynamicWeatherAppTheme
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextWhite
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {

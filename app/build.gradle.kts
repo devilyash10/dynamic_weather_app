@@ -22,7 +22,10 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            // Enables code shrinking, obfuscation, and optimization
+            isMinifyEnabled = true
+            // Removes unused resources (images, layouts) to shrink APK size
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -103,4 +106,6 @@ dependencies {
     // Jetpack Glance for building Compose-style App Widgets
     implementation("androidx.glance:glance-appwidget:1.1.0")
     implementation("androidx.glance:glance-material3:1.1.0")
+    // Android 12+ Splash Screen API
+    implementation("androidx.core:core-splashscreen:1.0.1")
 }
