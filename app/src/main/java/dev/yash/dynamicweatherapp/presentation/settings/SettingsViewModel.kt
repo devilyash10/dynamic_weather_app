@@ -37,4 +37,23 @@ class SettingsViewModel @Inject constructor(
             settingsRepository.setTemperatureUnit(newUnit)
         }
     }
+    // 1. Expose the saved interval to the UI
+    val syncInterval: StateFlow<Long> = settingsRepository.syncInterval
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 15L // Default to 15 while loading
+        )
+
+    // 2. Function to update DataStore AND schedule the worker
+    fun updateSyncInterval(context: android.content.Context, minutes: Long) {
+        viewModelScope.launch {
+            // Save it permanently
+            settingsRepository.setSyncInterval(minutes)
+            // Schedule the background work
+            dev.yash.dynamicweatherapp.data.worker.WeatherWorkScheduler.scheduleWeatherSync(context, minutes)
+        }
+    }
+
+
 }

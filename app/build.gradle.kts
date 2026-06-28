@@ -72,13 +72,22 @@ dependencies {
     // Google Play Services (GPS & Location)
     implementation("com.google.android.gms:play-services-location:21.3.0")
 
-    // WorkManager (15-minute background sync)
+    // WorkManager ( background sync)
     implementation("androidx.work:work-runtime-ktx:2.11.0")
 
     // Hilt Dependencies
     implementation("com.google.dagger:hilt-android:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
     ksp("com.google.dagger:hilt-compiler:2.51.1")
+
+    // WorkManager Core KTX
+    //implementation("androidx.work:work-runtime-ktx:2.9.0")
+
+    // Hilt WorkManager integration integration
+    implementation("androidx.hilt:hilt-work:1.2.0")
+
+    // THE FIX: Add the Hilt Compiler processing step for KSP
+    ksp("androidx.hilt:hilt-compiler:1.2.0")
 
     // Jetpack DataStore for saving local preferences
     implementation("androidx.datastore:datastore-preferences:1.1.1")

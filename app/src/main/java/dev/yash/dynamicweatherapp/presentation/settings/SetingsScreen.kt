@@ -41,7 +41,7 @@ fun SettingsScreen(
     val scrollState = rememberScrollState()
 
     // Local state for the new UI elements (until you wire them to DataStore)
-    var syncInterval by remember { mutableStateOf("15") }
+    val syncInterval by viewModel.syncInterval.collectAsState()
     var dynamicBackgrounds by remember { mutableStateOf(true) }
     var weatherNotifications by remember { mutableStateOf(true) }
     var hourlyWidget by remember { mutableStateOf(false) }
@@ -50,6 +50,7 @@ fun SettingsScreen(
     val showUnavailableToast = {
         Toast.makeText(context, "Service currently unavailable", Toast.LENGTH_SHORT).show()
     }
+
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -105,17 +106,61 @@ fun SettingsScreen(
             // SECTION 2: BACKGROUND SYNC (Missing from previous version)
             GlassCard(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
-                    Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        Icon(imageVector = Icons.Default.Schedule, contentDescription = null, tint = NimbusTextHint, modifier = Modifier.size(24.dp))
+                    Row(
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Schedule,
+                            contentDescription = null,
+                            tint = NimbusTextHint,
+                            modifier = Modifier.size(24.dp)
+                        )
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text("Background Sync", style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = NimbusTextWhite)
+                        Text(
+                            "Background Sync",
+                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            color = NimbusTextWhite
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(8.dp))
 
-                    SyncOptionRow(title = "Every 15 minutes", selected = syncInterval == "15") { syncInterval = "15" }
-                    SyncOptionRow(title = "Every 30 minutes", selected = syncInterval == "30") { syncInterval = "30" }
-                    SyncOptionRow(title = "Every hour", selected = syncInterval == "60") { syncInterval = "60" }
+                    // SECTION 2: BACKGROUND SYNC
+                    SyncOptionRow(
+                        title = "Never (On app open only)",
+                        selected = syncInterval == 0L
+                    ) {
+                        viewModel.updateSyncInterval(context, 0L)
+                    }
+
+                    SyncOptionRow(
+                        title = "Every 15 minutes",
+                        selected = syncInterval == 15L
+                    ) {
+                        viewModel.updateSyncInterval(context, 15L)
+                    }
+
+                    SyncOptionRow(
+                        title = "Every 30 minutes",
+                        selected = syncInterval == 30L
+                    ) {
+                        viewModel.updateSyncInterval(context, 30L)
+                    }
+
+                    SyncOptionRow(
+                        title = "Every hour",
+                        selected = syncInterval == 60L
+                    ) {
+                        viewModel.updateSyncInterval(context, 60L)
+                    }
+
+                    SyncOptionRow(
+                        title = "Every 6 hours",
+                        selected = syncInterval == 360L
+                    ) {
+                        viewModel.updateSyncInterval(context, 360L)
+                    }
                 }
             }
 

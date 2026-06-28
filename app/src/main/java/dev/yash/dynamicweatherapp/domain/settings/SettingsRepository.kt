@@ -8,8 +8,11 @@ enum class TemperatureUnit {
 }
 
 interface SettingsRepository {
-    // Flow allows the UI to instantly update if the setting changes
+    // 1. Temperature Blueprints
     val temperatureUnit: Flow<TemperatureUnit>
-
     suspend fun setTemperatureUnit(unit: TemperatureUnit)
+
+    // 2. Background Sync Blueprints
+    val syncInterval: Flow<Long>
+    suspend fun setSyncInterval(minutes: Long)
 }
