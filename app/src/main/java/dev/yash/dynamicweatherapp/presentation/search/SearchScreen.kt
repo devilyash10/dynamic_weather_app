@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.rounded.AddLocationAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -25,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -140,7 +142,7 @@ fun SearchScreen(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Icon(
-                    imageVector = androidx.compose.material.icons.Icons.Default.Info,
+                    imageVector = Icons.Default.Info,
                     contentDescription = "Info",
                     tint = NimbusTextHint.copy(alpha = 0.7f),
                     modifier = Modifier.size(14.dp)
@@ -223,12 +225,55 @@ fun SearchScreen(
                             )
                         }
                     }
+                } else {
+                    // NEW: The beautiful empty state when no cities are saved!
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.padding(bottom = 100.dp) // Offset for bottom nav
+                        ) {
+                            Surface(
+                                shape = MaterialTheme.shapes.extraLarge,
+                                color = NimbusAccentBlue.copy(alpha = 0.1f),
+                                modifier = Modifier.size(100.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Rounded.AddLocationAlt,
+                                    contentDescription = "No Cities",
+                                    tint = NimbusAccentBlue,
+                                    modifier = Modifier
+                                        .padding(24.dp)
+                                        .fillMaxSize()
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(24.dp))
+
+                            Text(
+                                text = "No Cities Saved",
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                                color = NimbusTextWhite
+                            )
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = "Use the search bar above to find a city and add it to your tracking list.",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = NimbusTextHint,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier.padding(horizontal = 32.dp)
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
-
 
 
 // Active Network Search Results
