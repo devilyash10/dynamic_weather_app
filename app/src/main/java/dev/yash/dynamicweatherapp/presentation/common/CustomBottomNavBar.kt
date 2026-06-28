@@ -14,6 +14,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import dev.yash.dynamicweatherapp.presentation.navigation.Screen
 import dev.yash.dynamicweatherapp.presentation.theme.NimbusAccentBlue
@@ -34,10 +35,12 @@ fun CustomBottomNavBar(navController: NavController) {
         NavigationBarItem(
             selected = currentRoute == Screen.Home.route,
             onClick = {
-                if (currentRoute != Screen.Home.route) {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
                     }
+                    launchSingleTop = true
+                    restoreState = true
                 }
             },
             icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
@@ -49,8 +52,12 @@ fun CustomBottomNavBar(navController: NavController) {
         NavigationBarItem(
             selected = currentRoute == Screen.Search.route,
             onClick = {
-                if (currentRoute != Screen.Search.route) {
-                    navController.navigate(Screen.Search.route)
+                navController.navigate(Screen.Search.route) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
                 }
             },
             icon = { Icon(Icons.Default.Search, contentDescription = "Cities") },
@@ -62,8 +69,12 @@ fun CustomBottomNavBar(navController: NavController) {
         NavigationBarItem(
             selected = currentRoute == Screen.Settings.route,
             onClick = {
-                if (currentRoute != Screen.Settings.route) {
-                    navController.navigate(Screen.Settings.route)
+                navController.navigate(Screen.Settings.route) {
+                    popUpTo(navController.graph.findStartDestination().id) {
+                        saveState = true
+                    }
+                    launchSingleTop = true
+                    restoreState = true
                 }
             },
             icon = { Icon(Icons.Default.Settings, contentDescription = "Settings") },

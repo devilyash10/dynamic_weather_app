@@ -1,5 +1,9 @@
 package dev.yash.dynamicweatherapp
 
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -39,12 +43,39 @@ class MainActivity : ComponentActivity() {
                         CustomBottomNavBar(navController = navController)
                     }
                 ) { paddingValues ->
-
                     // NavHost holds the actual screens and handles the routing
                     NavHost(
                         navController = navController,
                         startDestination = Screen.Home.route,
-                        modifier = Modifier.padding(paddingValues) // Prevents the UI from drawing under the bottom bar
+                        modifier = Modifier.padding(paddingValues),
+                        // 1. When opening a new screen (Slides in from the Right)
+                        enterTransition = {
+                            slideIntoContainer(
+                                towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                                animationSpec = tween(300)
+                            ) + fadeIn(animationSpec = tween(300))
+                        },
+                        // 2. When the old screen is leaving (Slides out to the Left)
+                        exitTransition = {
+                            slideOutOfContainer(
+                                towards = AnimatedContentTransitionScope.SlideDirection.Start,
+                                animationSpec = tween(300)
+                            ) + fadeOut(animationSpec = tween(300))
+                        },
+                        // 3. When hitting the Back button (Slides back in from the Left)
+                        popEnterTransition = {
+                            slideIntoContainer(
+                                towards = AnimatedContentTransitionScope.SlideDirection.End,
+                                animationSpec = tween(300)
+                            ) + fadeIn(animationSpec = tween(300))
+                        },
+                        // 4. When the current screen is popping off (Slides out to the Right)
+                        popExitTransition = {
+                            slideOutOfContainer(
+                                towards = AnimatedContentTransitionScope.SlideDirection.End,
+                                animationSpec = tween(300)
+                            ) + fadeOut(animationSpec = tween(300))
+                        }
                     ) {
 
                         // 1. Home Screen Destination

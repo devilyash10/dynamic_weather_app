@@ -66,3 +66,27 @@ We scaled out full persistence architectures across the application layer. We in
 
 ## Current Working Focus
 Moving into **Phase 7: Polish, Optimization & Release Prep**. The final goal is to connect the database to the Home Screen so clicking a saved city switches the home weather view, build out empty states, ensure dark-mode status bar formatting, run performance tracing, and polish transitions.
+
+## "feat(ui):implement glassmorphism, custom icons, and complete Settings screen
+Extensive UI/UX overhaul to match premium design mockups across the app.
+
+1. Common Components & Assets:
+- Upgraded `GlassCard` with linear gradients and translucent borders for a realistic frosted glass effect.
+- Imported and implemented custom vector SVG weather icons (fixing W3C DOCTYPE 429 import errors).
+- Refactored `WeatherIconMapper` to support a hybrid of OpenWeatherMap strings (01d/01n for day/night support) and Open-Meteo integer codes.
+
+2. Home Screen:
+- Rebuilt `DailyForecastSection`: moved header outside the card, added layered gradient temperature bars, and added subtle row dividers.
+- Removed hardcoded white tints in `HourlyForecastRow` and `MainTemperatureDisplay` to allow custom SVG colors to render.
+- Updated `WeatherMetricsGrid` to utilize custom drawable icons (humidity, wind, pressure, etc.) via `painterResource`.
+
+3. Search Screen:
+- Rebuilt `SearchScreen` UI to match mockups with live weather data for saved cities.
+- Updated `SearchState` and `SearchViewModel` to fetch live weather data for all saved database entities concurrently using Coroutines.
+- Replaced the delete icon with a long-press gesture and added a subtle, dimmed instructional hint.
+
+4. Settings Screen:
+- Built full `SettingsScreen` UI matching target mockups (Preferences, Background Sync, Display, About).
+- Implemented `SettingsViewModel` with DataStore integration for global temperature unit toggling.
+- Built a custom, animated glassmorphic dialogue box overlay for the 'About the Developer' section.
+  "
