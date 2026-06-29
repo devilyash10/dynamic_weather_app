@@ -29,7 +29,7 @@ fun AboutDeveloperDialog(
         Card(
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF1E1E1E), // Solid dark background for contrast
+                containerColor = Color(0xFF1E1E1E),
                 contentColor = Color.White
             ),
             elevation = CardDefaults.cardElevation(defaultElevation = 8.dp),

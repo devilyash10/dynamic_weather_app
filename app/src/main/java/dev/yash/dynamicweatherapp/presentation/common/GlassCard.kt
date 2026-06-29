@@ -20,7 +20,7 @@ fun GlassCard(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(cornerRadius.dp))
-            // The magic: A diagonal gradient from 12% white to 4% white creates the glass shine
+            // A diagonal gradient from 12% white to 4% white creates the glass shine
             .background(
                 brush = Brush.linearGradient(
                     colors = listOf(

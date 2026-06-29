@@ -9,7 +9,6 @@ import dev.yash.dynamicweatherapp.domain.repository.WeatherRepository
 @EntryPoint
 @InstallIn(SingletonComponent::class)
 interface WidgetEntryPoint {
-    // This allows the widget to grab these dependencies
     fun locationDao(): LocationDao
     fun weatherRepository(): WeatherRepository
 }

@@ -32,7 +32,7 @@ fun OpenMeteoDto.toWeatherInfo(): WeatherInfo {
                 HourlyForecast(
                     time = time,
                     temperature = hourly.temperature_2m[i],
-                    iconId = parseWeatherCodeToIcon(hourly.weather_code[i], isDay = true) // simplified
+                    iconId = parseWeatherCodeToIcon(hourly.weather_code[i], isDay = true)
                 )
             )
         }

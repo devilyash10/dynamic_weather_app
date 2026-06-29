@@ -85,7 +85,7 @@ private fun DailyForecastItem(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 16.dp), // Increased padding for premium feel
+            .padding(horizontal = 20.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         // Day Name
@@ -101,7 +101,6 @@ private fun DailyForecastItem(
             painter = painterResource(id = getWeatherIconResource(forecast.iconId)),
             contentDescription = "Weather Icon",
             modifier = Modifier.size(28.dp),
-            // We set tint to Unspecified so custom colored SVGs will show their actual colors!
             tint = Color.Unspecified
         )
 
@@ -124,7 +123,7 @@ private fun DailyForecastItem(
                 .width(80.dp)
                 .height(6.dp)
                 .background(
-                    color = Color.White.copy(alpha = 0.08f), // Dark background track
+                    color = Color.White.copy(alpha = 0.08f),
                     shape = RoundedCornerShape(3.dp)
                 ),
             contentAlignment = Alignment.CenterStart
@@ -132,14 +131,14 @@ private fun DailyForecastItem(
             // The colorful gradient range indicator
             Box(
                 modifier = Modifier
-                    .fillMaxWidth(0.5f) // Width of the gradient bar
-                    .offset(x = 16.dp)  // Shift it slightly right
+                    .fillMaxWidth(0.5f)
+                    .offset(x = 16.dp)
                     .fillMaxHeight()
                     .background(
                         brush = Brush.horizontalGradient(
                             colors = listOf(
-                                Color(0xFF5E9BC8), // Soft Blue
-                                Color(0xFFECAE5E)  // Warm Yellow/Orange
+                                Color(0xFF5E9BC8),
+                                Color(0xFFECAE5E)
                             )
                         ),
                         shape = RoundedCornerShape(3.dp)

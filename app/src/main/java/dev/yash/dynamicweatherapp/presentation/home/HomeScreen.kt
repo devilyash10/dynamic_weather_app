@@ -121,13 +121,13 @@ fun HomeScreen(
                         temperatureUnit = state.temperatureUnit
                     )
 
-                    // Add bottom padding so the last item isn't hidden behind the Bottom Navigation Bar
+
                     Spacer(modifier = Modifier.height(100.dp))
                 }
             }
         }
 
-        // 4. NEW: Specifically check if it is definitively false
+        // 4. Specifically check if it is definitively false
         if (state.hasAcceptedPrivacyPolicy == false && !state.isLoading) {
             PrivacyPolicyDialog(
                 onDismiss = {

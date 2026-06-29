@@ -87,12 +87,12 @@ fun CustomBottomNavBar(navController: NavController) {
     }
 }
 
-// Reusable color styling for the tabs
+
 @Composable
 private fun navigationBarColors() = NavigationBarItemDefaults.colors(
     selectedIconColor = NimbusAccentBlue,
     selectedTextColor = NimbusAccentBlue,
     unselectedIconColor = NimbusTextHint,
     unselectedTextColor = NimbusTextHint,
-    indicatorColor = Color.Transparent // Removes the pill-shaped background on selected items for a cleaner look
+    indicatorColor = Color.Transparent
 )

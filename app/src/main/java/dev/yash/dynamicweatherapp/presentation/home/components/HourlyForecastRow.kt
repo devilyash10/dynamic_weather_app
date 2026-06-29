@@ -35,7 +35,7 @@ fun HourlyForecastRow(
             items(hourlyForecasts.take(24)) { forecast -> // Limit to next 24 hours
                 HourlyForecastItem(
                     forecast = forecast,
-                    temperatureUnit = temperatureUnit // Pass it to the item
+                    temperatureUnit = temperatureUnit
                 )
             }
         }

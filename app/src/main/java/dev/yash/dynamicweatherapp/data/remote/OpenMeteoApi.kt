@@ -16,13 +16,13 @@ interface OpenMeteoApi { // Keeping the name so DI doesn't break, but it's hitti
         @Query("hourly") hourly: String = "temperature_2m,weather_code",
         @Query("daily") daily: String = "weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,uv_index_max",
         @Query("timezone") timezone: String = "auto", // Automatically syncs to the user's local time
-        @Query("timeformat") timeformat: String = "unixtime" // Matches our existing UI logic perfectly
+        @Query("timeformat") timeformat: String = "unixtime"
     ): OpenMeteoDto
 
     @GET("https://geocoding-api.open-meteo.com/v1/search")
     suspend fun searchLocation(
         @Query("name") query: String,
-        @Query("count") count: Int = 5, // We only want the top 5 results
+        @Query("count") count: Int = 5, // only top 5 results
         @Query("language") language: String = "en",
         @Query("format") format: String = "json"
     ): GeocodingResponseDto

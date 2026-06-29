@@ -97,7 +97,7 @@ fun MetricCard(
     title: String,
     value: String,
     subtitle: String,
-    iconRes: Int // NEW: Accepts your drawable IDs
+    iconRes: Int
 ) {
     GlassCard(modifier = modifier) {
         Column(
@@ -109,7 +109,7 @@ fun MetricCard(
                 Icon(
                     painter = painterResource(id = iconRes),
                     contentDescription = title,
-                    tint = androidx.compose.ui.graphics.Color.Unspecified, // Keeps them that premium blue color
+                    tint = androidx.compose.ui.graphics.Color.Unspecified,
                     modifier = Modifier.size(16.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))

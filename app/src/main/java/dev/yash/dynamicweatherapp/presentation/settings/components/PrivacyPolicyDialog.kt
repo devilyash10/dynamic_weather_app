@@ -114,7 +114,7 @@ fun PrivacyPolicyDialog(
     }
 }
 
-// Helper Composable to keep the formatting clean and consistent
+
 @Composable
 private fun PolicySection(title: String, body: String) {
     Column(modifier = Modifier.padding(bottom = 20.dp)) {
@@ -128,7 +128,7 @@ private fun PolicySection(title: String, body: String) {
             text = body,
             style = MaterialTheme.typography.bodyMedium,
             color = Color.LightGray,
-            lineHeight = 22.sp // Adds a bit of breathing room between lines of text
+            lineHeight = 22.sp
         )
     }
 }

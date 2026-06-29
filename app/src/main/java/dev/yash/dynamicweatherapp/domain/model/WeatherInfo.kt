@@ -11,13 +11,13 @@ data class WeatherInfo(
 data class CurrentWeather(
     val temperature: Double,
     val feelsLike: Double,
-    val condition: String,      // e.g., "Clear", "Clouds"
-    val iconId: String,         // OpenWeather icon code (e.g., "01d")
+    val condition: String,
+    val iconId: String,
     val humidity: Int,
     val windSpeed: Double,
     val pressure: Int,
     val uvIndex: Double,
-    val sunriseTime: Long,      // We will format this to AM/PM in the UI/ViewModel
+    val sunriseTime: Long,
     val sunsetTime: Long
 )
 

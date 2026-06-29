@@ -20,7 +20,7 @@ import dev.yash.dynamicweatherapp.presentation.theme.NimbusTextWhite
 @Composable
 fun LocationHeader(
     locationName: String,
-    lastUpdated: String, // NEW: Accepts the parameter
+    lastUpdated: String,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -28,10 +28,10 @@ fun LocationHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Left Side: Location Icon and City Name
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.weight(1f) // Allows text to truncate if too long
+            modifier = Modifier.weight(1f)
         ) {
             Icon(
                 imageVector = Icons.Default.LocationOn,
@@ -50,7 +50,6 @@ fun LocationHeader(
 
         Spacer(modifier = Modifier.width(16.dp))
 
-        // Right Side: "Just updated" Badge (Matching your mockup exactly)
         Box(
             modifier = Modifier
                 .background(

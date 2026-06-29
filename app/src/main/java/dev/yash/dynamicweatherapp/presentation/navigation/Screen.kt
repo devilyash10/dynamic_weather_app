@@ -1,7 +1,6 @@
 package dev.yash.dynamicweatherapp.presentation.navigation
 
 sealed class Screen(val route: String) {
-    // The base route remains a simple string so the Bottom Navigation Bar never crashes
     object Home : Screen("home") {
         const val routeWithArgs = "home?lat={lat}&lon={lon}&cityName={cityName}"
 

@@ -82,7 +82,7 @@ class MainActivity : ComponentActivity() {
 
                         // 1. Home Screen Destination
                         composable(
-                            route = Screen.Home.routeWithArgs, // Uses the argument pattern
+                            route = Screen.Home.routeWithArgs,
                             arguments = listOf(
                                 navArgument("lat") { type = NavType.StringType; nullable = true },
                                 navArgument("lon") { type = NavType.StringType; nullable = true },

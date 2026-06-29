@@ -14,3 +14,7 @@
 .cxx
 local.properties
 design_refrences/
+/.idea/
+/app/build/
+*.apk
+*.aab

@@ -54,11 +54,10 @@ class HomeViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true, error = null) }
 
             if (passedLat != null && passedLon != null) {
-                // Scenario A: User manually selected a city from search
                 val cityName = passedCityName ?: "Selected Location"
                 fetchWeatherForLocation(passedLat.toDouble(), passedLon.toDouble(), cityName)
             } else {
-                // Scenario B: Defaulting to current system GPS coordinates
+
                 locationTracker.getCurrentLocation()?.let { location ->
                     val detectedCity = getCityNameFromCoordinates(location.latitude, location.longitude)
                     fetchWeatherForLocation(location.latitude, location.longitude, detectedCity)
@@ -93,7 +92,6 @@ class HomeViewModel @Inject constructor(
         )
     }
 
-    // Translates GPS coordinates into localized city name strings safely off the main UI thread
     private suspend fun getCityNameFromCoordinates(lat: Double, lon: Double): String = withContext(Dispatchers.IO) {
         return@withContext try {
             val geocoder = Geocoder(context, Locale.getDefault())
@@ -105,7 +103,7 @@ class HomeViewModel @Inject constructor(
     }
     fun acceptPrivacyPolicy() {
         viewModelScope.launch {
-            // Persist the selection to local DataStore storage
+
             settingsRepository.setPrivacyPolicyAccepted(true)
         }
     }

@@ -37,7 +37,7 @@ class WeatherSyncWorker @AssistedInject constructor(
                         // Bulletproof severe weather list handling both API formats:
                         val severeCodes = listOf("65", "82", "95", "96", "99", "11d", "11n", "09d", "09n")
 
-                        // NOTE: If you are using Int for weather codes, remove the quotes!
+
                         if (severeCodes.contains(weatherInfo.current.iconId.toString())) {
                             showSevereWeatherNotification(location.name, weatherInfo.current.condition)
                         }
@@ -57,7 +57,7 @@ class WeatherSyncWorker @AssistedInject constructor(
         val notificationManager = applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val notification = NotificationCompat.Builder(applicationContext, "WEATHER_ALERTS")
-            .setSmallIcon(R.drawable.ic_thunderstorm) // Using the SVG we imported earlier!
+            .setSmallIcon(R.drawable.ic_thunderstorm)
             .setContentTitle("Severe Weather Alert: $cityName")
             .setContentText("Current condition: $condition. Stay safe!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)

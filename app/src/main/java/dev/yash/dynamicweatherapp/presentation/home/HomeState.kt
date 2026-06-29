@@ -6,9 +6,9 @@ import dev.yash.dynamicweatherapp.domain.settings.TemperatureUnit
 
 data class HomeState(
     val isLoading: Boolean = false,
-    val weatherInfo: WeatherInfo? = null, // Or your specific Weather model type
+    val weatherInfo: WeatherInfo? = null,
     val error: String? = null,
-    val locationName: String = "Locating...", // Default text while fetching GPS
+    val locationName: String = "Locating...",
     val temperatureUnit: TemperatureUnit = TemperatureUnit.CELSIUS,
     val hasAcceptedPrivacyPolicy: Boolean? = null
 )

@@ -1,13 +1,11 @@
 package dev.yash.dynamicweatherapp.presentation.settings
 
-import android.R
+
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -15,16 +13,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import dev.yash.dynamicweatherapp.domain.settings.TemperatureUnit
 import dev.yash.dynamicweatherapp.presentation.common.GlassCard
@@ -95,7 +89,7 @@ fun SettingsScreen(
                     Column(modifier = Modifier.weight(1f)) {
                         Text("Temperature Unit", style = MaterialTheme.typography.labelLarge.copy(
                             fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp, // Bumped up from the default 12sp
+                            fontSize = 16.sp,
                             letterSpacing = 1.sp
                         ), color = NimbusTextWhite)
                         Spacer(modifier = Modifier.height(4.dp))
@@ -112,7 +106,7 @@ fun SettingsScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // SECTION 2: BACKGROUND SYNC (Missing from previous version)
+            // SECTION 2: BACKGROUND SYNC
             GlassCard(modifier = Modifier.fillMaxWidth()) {
                 Column(modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp)) {
                     Row(
@@ -130,7 +124,7 @@ fun SettingsScreen(
                             "Background Sync",
                             style = MaterialTheme.typography.labelLarge.copy(
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp, // Bumped up from the default 12sp
+                                fontSize = 16.sp,
                                 letterSpacing = 1.sp
                             ),
                             color = NimbusTextWhite
@@ -212,7 +206,7 @@ fun SettingsScreen(
                         ), color = NimbusTextWhite)
                     }
 
-                    SettingsInfoRow(title = "Version", value = "2.4.1")
+                    SettingsInfoRow(title = "Version", value = "2.5.0")
                     HorizontalDivider(color = Color.White.copy(alpha = 0.05f), modifier = Modifier.padding(horizontal = 20.dp))
 
                     SettingsInfoRow(title = "Data Source", value = "Open-Meteo API")
@@ -250,7 +244,7 @@ fun SettingsScreen(
             AboutDeveloperDialog(onDismiss = { showDeveloperDialog = false })
         }
 
-//        // --- MODERN GLASSMORPHIC DIALOGUE OVERLAY ---
+//        //GLASSMORPHIC DIALOGUE OVERLAY ---
 //        if (showDeveloperDialog) {
 //            Dialog(onDismissRequest = { showDeveloperDialog = false }, properties = DialogProperties(usePlatformDefaultWidth = false)) {
 //                Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.6f)).padding(horizontal = 32.dp), contentAlignment = Alignment.Center) {

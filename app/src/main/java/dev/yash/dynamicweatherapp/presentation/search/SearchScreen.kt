@@ -120,7 +120,7 @@ fun SearchScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Place, // Or Icons.Default.Navigation
+                        imageVector = Icons.Default.Place,
                         contentDescription = "GPS",
                         tint = NimbusAccentBlue,
                         modifier = Modifier.size(20.dp)
@@ -136,7 +136,7 @@ fun SearchScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // IMPROVED: Subtle, premium instructional hint
+            //Subtle, premium instructional hint
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
@@ -152,7 +152,7 @@ fun SearchScreen(
                 Text(
                     text = "Long press a saved location to delete it",
                     style = MaterialTheme.typography.labelMedium,
-                    color = NimbusTextHint.copy(alpha = 0.7f) // Muted color so it acts as a subtle hint
+                    color = NimbusTextHint.copy(alpha = 0.7f)
                 )
             }
         }
@@ -209,7 +209,7 @@ fun SearchScreen(
                         itemsIndexed(state.savedLocations) { index, dbLocationState ->
                             SavedLocationRow(
                                 state = dbLocationState,
-                                isFirstItem = index == 0, // Adds the blue dot indicator to the first item like the mockup
+                                isFirstItem = index == 0,
                                 temperatureUnit = state.temperatureUnit,
                                 onDeleteClick = { viewModel.deleteLocation(dbLocationState.location) },
                                 onClick = {
@@ -227,14 +227,14 @@ fun SearchScreen(
                         }
                     }
                 } else {
-                    // NEW: The beautiful empty state when no cities are saved!
+                    // The beautiful empty state when no cities are saved!
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
                     ) {
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
-                            modifier = Modifier.padding(bottom = 100.dp) // Offset for bottom nav
+                            modifier = Modifier.padding(bottom = 100.dp)
                         ) {
                             Surface(
                                 shape = MaterialTheme.shapes.extraLarge,
@@ -301,7 +301,7 @@ fun SearchResultItem(location: LocationSearchResult, onClick: () -> Unit) {
     }
 }
 
-// MATCHING MOCKUP: Saved Locations with Live Weather Data
+// Saved Locations with Live Weather Data
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SavedLocationRow(
@@ -315,7 +315,7 @@ fun SavedLocationRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            // NEW: Long Press to delete!
+            //Long Press to delete!
             .combinedClickable(
                 onClick = onClick,
                 onLongClick = onDeleteClick
@@ -377,7 +377,7 @@ fun SavedLocationRow(
                     Icon(
                         painter = painterResource(id = getWeatherIconResource(state.weatherInfo.current.iconId)),
                         contentDescription = null,
-                        tint = Color.Unspecified, // Allows colored icons
+                        tint = Color.Unspecified,
                         modifier = Modifier.size(28.dp)
                     )
                     Spacer(modifier = Modifier.width(12.dp))

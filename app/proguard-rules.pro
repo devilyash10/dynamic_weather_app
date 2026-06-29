@@ -19,3 +19,10 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Retrofit/GSON/Moshi Rules: Keep all data classes safe from obfuscation
+-keep class dev.yash.dynamicweatherapp.** { *; }
+
+# If you specifically use Gson or Moshi, add these standard safety rules:
+-keepattributes Signature
+-keepattributes *Annotation*

@@ -59,7 +59,6 @@ private fun WidgetLayout(cityName: String, temp: String, desc: String) {
     Box(
         modifier = GlanceModifier
             .fillMaxSize()
-            // A semi-transparent dark background for that modern glass look
             .background(ColorProvider(day = Color(0xFF121212).copy(alpha = 0.8f), night = Color(0xFF121212).copy(alpha = 0.8f)))
             .padding(8.dp),
         contentAlignment = Alignment.Center
@@ -72,9 +71,9 @@ private fun WidgetLayout(cityName: String, temp: String, desc: String) {
             Text(
                 text = temp,
                 style = TextStyle(
-                    // THE FIX: Explicitly setting day and night colors
+                    // Explicitly setting day and night colors
                     color = ColorProvider(day = Color.White, night = Color.White),
-                    fontSize = 42.sp, // Massive temperature text
+                    fontSize = 42.sp,
                     fontWeight = FontWeight.Bold
                 )
             )
@@ -86,22 +85,12 @@ private fun WidgetLayout(cityName: String, temp: String, desc: String) {
                 Text(
                     text = cityName,
                     style = TextStyle(
-                        // THE FIX: Explicitly setting day and night colors
+                        // Explicitly setting day and night colors
                         color = ColorProvider(day = Color.White, night = Color.White),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold
                     )
                 )
-    //            Spacer(modifier = GlanceModifier.height(4.dp))
-//                Text(
-//                    text = temp,
-//                    style = TextStyle(
-//                        // THE FIX: Explicitly setting day and night colors
-//                        color = ColorProvider(day = Color.White, night = Color.White),
-//                        fontSize = 28.sp, // Massive temperature text
-//                        fontWeight = FontWeight.Bold
-//                    )
-//                )
                 Spacer(modifier = GlanceModifier.height(4.dp))
                 Text(
                     text = desc,

@@ -30,7 +30,6 @@ object AppModule {
     @Singleton
     fun provideOpenWeatherApi(): OpenMeteoApi {
         return Retrofit.Builder()
-            // CHANGE THIS LINE:
             .baseUrl("https://api.open-meteo.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -58,12 +57,10 @@ object AppModule {
         return WeatherRepositoryImpl(api)
     }
 
-    // Add these inside your AppModule class:
     @Provides
     @Singleton
     fun provideDataStore(@ApplicationContext context: android.content.Context): androidx.datastore.core.DataStore<androidx.datastore.preferences.core.Preferences> {
         return androidx.datastore.preferences.core.PreferenceDataStoreFactory.create(
-            // Notice we just call it directly on context now:
             produceFile = { context.preferencesDataStoreFile("settings_prefs") }
         )
     }

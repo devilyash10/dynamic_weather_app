@@ -28,8 +28,6 @@ fun MainTemperatureDisplay(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Standard Compose Icon handling. If you haven't added the SVG icons yet,
-        // this will just render the fallback Android logo we set up earlier.
         androidx.compose.material3.Icon(
             painter = painterResource(id = getWeatherIconResource(currentWeather.iconId)),
             contentDescription = currentWeather.condition,
@@ -42,14 +40,13 @@ fun MainTemperatureDisplay(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Large Temperature (e.g., "18°C")
         Row(verticalAlignment = Alignment.Top) {
             Text(
-                text = currentWeather.temperature.toFormattedTemp(temperatureUnit), // UPDATED
+                text = currentWeather.temperature.toFormattedTemp(temperatureUnit),
                 style = MaterialTheme.typography.displayLarge
             )
             Text(
-                text = temperatureUnit.getSymbol(), // UPDATED
+                text = temperatureUnit.getSymbol(),
                 style = MaterialTheme.typography.headlineMedium,
                 modifier = Modifier.padding(top = 12.dp)
             )
